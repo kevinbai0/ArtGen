@@ -18,7 +18,7 @@ function drawFunction(fun: (num: number) => number) {
     ctx.lineWidth = 10;
     ctx.moveTo(0,0);
     let interval = setInterval(() => {
-        i += 0.01;
+        i += 0.03;
         ctx!.lineTo(i * 50, 500 + 400 * fun(i));
         ctx!.stroke();
         if (i >= 10) clearInterval(interval);
