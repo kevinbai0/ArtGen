@@ -11,3 +11,4 @@ export interface DecoratedPoint extends Point {
 export type Lambda = (x: number) => DecoratedPoint[];
 
 export type Range = [number, number];
+export type MultiRange = Range | Array<Range>;

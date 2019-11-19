@@ -69,7 +69,6 @@ class DrawEngine {
                 const color = ctx.fillStyle = point.color || "black"; // get color from function
                 ctx.fillStyle = color;
                 ctx.moveTo(transformed.x, transformed.y);
-                console.log(color);
                 ctx.ellipse(transformed.x, transformed.y, r, r, 0, 0, 2 * Math.PI);
             });
         }

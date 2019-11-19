@@ -14,7 +14,9 @@ setupDocument();
 
 let circles = circleArtGenerator({
     colorRange: {
+        r: [[0, 100], [200, 255]],
         g: [100,255],
+        b: [[0,0], [100, 150]],
         a: [0.2,1]
     },
     radius: [0,30]
