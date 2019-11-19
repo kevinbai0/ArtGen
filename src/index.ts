@@ -1,34 +1,40 @@
+import DrawEngine from "./DrawEngine";
+import circleArtGenerator from "./functions/circles";
+
 const artboard = <HTMLCanvasElement> document.getElementById("artboard");
 var width = artboard.clientWidth * 3;
 var height = artboard.clientHeight * 3;
-
-type Lambda = (...x: number[]) => number;
 
 function setupDocument() {
     artboard.setAttribute("width", "" + width);
     artboard.setAttribute("height", "" + height);
 }
 
-const quadratic: Lambda = (x: number) => Math.sin(x);
+setupDocument();
 
-function drawFunction(fun: (num: number) => number) {
-    let ctx = artboard.getContext("2d");
-    if (!ctx) return;
+let circles = circleArtGenerator({
+    colorRange: {
+        g: [100,255],
+        a: [0.2,1]
+    },
+    radius: [0,30]
+});
+
+let drawEngine = new DrawEngine(circles, artboard);
+
+drawEngine.setContextSettings((ctx) => {
     ctx.lineWidth = 5;
     ctx.lineJoin = "round";
     ctx.moveTo(0,0);
-    requestAnimationFrame(() => draw(ctx!, fun, 0));
-}
-const draw = (ctx: CanvasRenderingContext2D, fun: Lambda, x: number) => {
-    let newX = x * 50;
-    let newY = 1000 + 700 * fun(x);
-    ctx.moveTo(newX, newY);
-    ctx!.ellipse(newX, newY, 2, 2, 0, 0, 2 * Math.PI);
-    ctx!.stroke();
-    if (x <= 50) {
-        requestAnimationFrame(() => draw(ctx, fun, x + 0.1));
+});
+
+drawEngine.start({
+    duration: 10000
+});
+
+drawEngine.dataListener = (fps: number, duration: number) => {
+    let div = document.getElementById("fps-indicator");
+    if (div) {
+        div.innerHTML = fps.toFixed(2) + "fps\n" + duration.toFixed(0) + "ms";
     }
 }
-
-setupDocument();
-drawFunction(quadratic);

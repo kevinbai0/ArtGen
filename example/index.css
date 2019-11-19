@@ -10,3 +10,14 @@ html {
     height: 100vh;
     background-color: #F2F2F2;
 }
+
+#fps-indicator {
+    position: absolute;
+    top: 5vw;
+    right: 5vw;
+    width: 100px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
