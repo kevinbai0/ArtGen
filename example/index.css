@@ -1,14 +1,56 @@
 html {
     margin: 0;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 14px;
 }
+
+button {
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #1993FF;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 20px;
+    border: none;
+    box-shadow: 0 2px 18px 0 rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+button:hover, button.hover{
+    transform: scale(1.05);
+    background-color: #0071D6;
+}
+button:active, button.active {
+    transform: scale(1.1);
+    box-shadow: 0 2px 20px 0 rgba(0,0,0,0.4);
+}
+button.hidden {
+    opacity: 0;
+}
+
+button.big {
+    font-size: 24px;
+    padding: 8px 32px;
+}
+
+button#start-button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 
 #artboard {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 800px;
+    height: 800px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #F2F2F2;
+    border-radius: 5px;
+    box-shadow: 0 2px 18px 0 rgba(0,0,0,0.2);
 }
 
 #fps-indicator {

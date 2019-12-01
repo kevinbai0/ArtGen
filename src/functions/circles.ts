@@ -37,7 +37,7 @@ const circleArtGenerator = (config?: CirclesConfig) => {
             let y = Math.random() * 2 * r - r;
             let newX = (Math.random() > 0.5 ? -1 : 1) * Math.sqrt(r * r - y * y);
 
-            points.push({x: newX * 10 + 150 + r * 5, y: y * 10 + 150 + r * 5, radius: radiusRandomizer(), color: colorRandomizer()});
+            points.push({x: newX * 20 + r * 5, y: y * 20 + r * 5, radius: radiusRandomizer(), color: colorRandomizer()});
         }
         return points;
     }
