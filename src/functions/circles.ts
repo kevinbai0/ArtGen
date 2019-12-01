@@ -1,4 +1,4 @@
-import { Lambda, MultiRange } from "../types";
+import { Lambda, MultiRange, Shape } from "../types";
 import { randomized } from "../utils";
 
 export interface CirclesConfig {
@@ -37,7 +37,12 @@ const circleArtGenerator = (config?: CirclesConfig) => {
             let y = Math.random() * 2 * r - r;
             let newX = (Math.random() > 0.5 ? -1 : 1) * Math.sqrt(r * r - y * y);
 
-            points.push({x: newX * 20 + r * 5, y: y * 20 + r * 5, radius: radiusRandomizer(), color: colorRandomizer()});
+            points.push(Shape.point({
+                x: newX * 20 + r * 5, 
+                y: y * 20 + r * 5, 
+                radius: radiusRandomizer(),
+                fill: colorRandomizer()
+            }));
         }
         return points;
     }
