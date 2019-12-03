@@ -36,21 +36,27 @@ export interface LineStyles extends ShapeStyles {
     lineWidth?: number
 }
 
+export interface OrderStyle {
+    zIndex?: number
+}
+
 export interface DecoratedLine extends Line, LineStyles, DecoratedShape {
     type: ShapeType.line
+    range: Range<number | string>
 }
 
 export const Shape = {
-    point: (point: Point & PointStyles & { zIndex?: number }): DecoratedPoint => {
+    point: (point: Point & PointStyles & OrderStyle): DecoratedPoint => {
         return {
             ...point,
             type: ShapeType.point,
             zIndex: point.zIndex || 0
         }
     },
-    line: (line: Line & LineStyles & { zIndex?: number }): DecoratedLine => {
+    line: (line: Line & LineStyles & OrderStyle & { range?: Range<number | string>}): DecoratedLine => {
         return {
             ...line,
+            range: line.range || ["0%", "100%"],
             type: ShapeType.line,
             zIndex: line.zIndex || 0
         }
@@ -59,5 +65,5 @@ export const Shape = {
 
 export type Lambda = (x: number) => { shapes: DecoratedShape[], dx: number };
 
-export type Range = [number, number];
-export type MultiRange = Range | Array<Range>;
+export type Range<T> = [T, T];
+export type MultiRange<T> = Range<T> | Array<Range<T>>;

@@ -1,4 +1,4 @@
-import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, DecoratedLine } from "../types";
+import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, DecoratedLine, Range } from "../types";
 import VirtualCanvas from "./VirtualCanvas";
 
 export interface StartConfiguration {
@@ -80,10 +80,11 @@ class DrawEngine {
         });
 
         arr.forEach(result => {
+            ctx.beginPath();
             result.fill.forEach(shape => this._drawShape[shape.type](shape));
             ctx.fill();
-            ctx.beginPath();
 
+            ctx.beginPath();
             result.stroke.forEach(shape => this._drawShape[shape.type](shape));
             ctx.stroke();
 
@@ -122,15 +123,16 @@ class DrawEngine {
         },
         line: (shape: DecoratedShape) => {
             const line = shape as DecoratedLine;
+            let range = getRange(line.range, line.points.length);
             const lineWidth = this._virtualCanvas.transformDimensionToCanvas(line.lineWidth || 1);
             if (!this._ctx) return;
             this._ctx.strokeStyle = line.stroke || "";
             this._ctx.lineWidth = lineWidth;
-            if (line.points.length > 0) {
-                const firstPoint = this._virtualCanvas.transformPointToCanvas(line.points[0]);
-                this._ctx.moveTo(firstPoint.x, firstPoint.y);
-            }
-            line.points.slice(1).forEach(point => {
+            if (line.points.length === 0) return;
+
+            const firstTransformedPoint = this._virtualCanvas.transformPointToCanvas(line.points[range[0]]);
+            this._ctx.moveTo(firstTransformedPoint.x, firstTransformedPoint.y);
+            line.points.slice(range[0], range[1] + 1).forEach(point => {
                 const transformed = this._virtualCanvas.transformPointToCanvas(point);
                 this._ctx!.lineTo(transformed.x, transformed.y);
             });
@@ -142,4 +144,17 @@ class DrawEngine {
     public dataListener = (fps: number, duration: number) => {};
 }
 
+function getRange(range: Range<number | string>, length: number): Range<number> {
+    if (typeof(range[0]) === "string") {
+        const newRange: Range<number> = [parseFloat(range[0]) / 100.0, parseFloat(range[1] as string) / 100.0];
+        if (isNaN(newRange[0]) || isNaN(newRange[1])) return [0, length - 1];
+        return [bounded(newRange[0], 0, 1) * (length - 1), bounded(newRange[1], 0, 1) * (length - 1)];
+    }
+    const numRange = range as Range<number>;
+    return [bounded(numRange[0], 0, length - 1), bounded(numRange[1], 0, length - 1)];
+}
+
+function bounded(num: number, lower: number, upper: number) {
+    return Math.min(Math.max(num,lower), upper);
+}
 export default DrawEngine;

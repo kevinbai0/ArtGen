@@ -1,14 +1,16 @@
 import { Lambda, MultiRange, Shape } from "../types";
 import { randomized } from "../utils";
 
+type MultiNumberRange = MultiRange<number>;
+
 export interface CirclesConfig {
     colorRange?: {
-        r?: MultiRange,
-        g?: MultiRange,
-        b?: MultiRange,
-        a?: MultiRange
+        r?: MultiNumberRange,
+        g?: MultiNumberRange,
+        b?: MultiNumberRange,
+        a?: MultiNumberRange
     },
-    radius?: MultiRange
+    radius?: MultiNumberRange
 }
 
 const circleArtGenerator = (config?: CirclesConfig) => {
@@ -17,13 +19,13 @@ const circleArtGenerator = (config?: CirclesConfig) => {
     let rangeB = config && config.colorRange && config.colorRange.b || [0,0];
     let rangeA = config && config.colorRange && config.colorRange.a || [1,1];
 
-    const colorRandomizer = (r: MultiRange = rangeR, g: MultiRange = rangeG, b: MultiRange = rangeB, a: MultiRange = rangeA) => {
+    const colorRandomizer = (r: MultiNumberRange = rangeR, g: MultiNumberRange = rangeG, b: MultiNumberRange = rangeB, a: MultiNumberRange = rangeA) => {
         return `
             rgba(${randomized(r)}, ${randomized(g)}, ${randomized(b)}, ${randomized(a)})
         `;
     }
 
-    const radiusRandomizer = (r: MultiRange = config && config.radius || [5,5]) => {
+    const radiusRandomizer = (r: MultiNumberRange = config && config.radius || [5,5]) => {
         return randomized(r);
     }
 
