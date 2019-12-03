@@ -31,7 +31,7 @@ const linesGen2 = () => {
             return Shape.line({
                 points: values.points,
                 range: [Math.round(x - 1) - i * 5, Math.round(x) + 10 - i * 5],
-                stroke: `rgba(${255 - Math.min(x / 10 * 1, 200)}, ${values.red}, ${values.green}, 0.5})`,
+                stroke: `rgba(${255 - Math.min(x / 10 * 1, 200)}, ${values.red}, ${values.green}, 0.5)`,
                 lineWidth: 5,
                 zIndex: i,
             })
