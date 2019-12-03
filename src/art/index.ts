@@ -1,5 +1,6 @@
 import circleArtGenerator from "../functions/circles";
 import circlesGen2 from "../functions/circles2";
+import linesGen from "../functions/lines";
 
 export const circles = circleArtGenerator({
     colorRange: {
@@ -12,3 +13,5 @@ export const circles = circleArtGenerator({
 });
 
 export const circles2 = circlesGen2();
+
+export const lines = linesGen();

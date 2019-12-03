@@ -44,7 +44,10 @@ const circleArtGenerator = (config?: CirclesConfig) => {
                 fill: colorRandomizer()
             }));
         }
-        return points;
+        return {
+            shapes: points,
+            dx: 0.1
+        }
     }
     return circles;
 }

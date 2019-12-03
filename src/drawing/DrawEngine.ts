@@ -1,8 +1,14 @@
-import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape } from "../types";
+import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, DecoratedLine } from "../types";
 import VirtualCanvas from "./VirtualCanvas";
 
 export interface StartConfiguration {
     duration?: number
+}
+
+type Separation = {
+    fill: DecoratedShape[],
+    stroke: DecoratedShape[],
+    fillAndStroke: DecoratedShape[]
 }
 
 class DrawEngine {
@@ -49,24 +55,43 @@ class DrawEngine {
      * Draws the 
      */
     private _draw = (ctx: CanvasRenderingContext2D, fun: Lambda, x: number) => {
-        let results = fun(x).reduce((acc, shape) => {
-            if (shape.fill && shape.stroke) acc.fillAndStroke.push(shape);
-            else if (shape.fill) acc.fill.push(shape);
-            else if (shape.stroke) acc.stroke.push(shape);
+        const funResult = fun(x);
+        const results = funResult.shapes.reduce((acc: Map<number, Separation>, shape) => {
+            if (!acc.get(shape.zIndex)) acc.set(shape.zIndex, { fill: [], stroke: [], fillAndStroke: []});
+            if (shape.fill && shape.stroke) acc.get(shape.zIndex)!.fillAndStroke.push(shape);
+            else if (shape.fill) acc.get(shape.zIndex)!.fill.push(shape);
+            else if (shape.stroke) acc.get(shape.zIndex)!.stroke.push(shape);
             return acc;
-        }, { fill: new Array<DecoratedShape>(), stroke: new Array<DecoratedShape>(), fillAndStroke: new Array<DecoratedShape>()});
+        }, new Map<number, Separation>());
 
-        results.fill.forEach(shape => this._drawShape[shape.type](shape));
-        ctx.fill();
-        ctx.beginPath();
+        let arr: Separation[] = [];
+        results.forEach(result => arr.push(result));
 
-        results.stroke.forEach(shape => this._drawShape[shape.type](shape));
-        ctx.stroke();
+        arr.sort((a, b) => {
+            const getZIndex = (sep: Separation) => {
+                if (sep.fill.length > 0) return sep.fill[0].zIndex;
+                if (sep.stroke.length > 0) return sep.stroke[0].zIndex;
+                if (sep.fillAndStroke.length > 0) return sep.fillAndStroke[0].zIndex;
+            }
+            let orderA = getZIndex(a);
+            let orderB = getZIndex(b);
+            if (!orderA || !orderB) return 1;
+            return orderA - orderB;
+        });
 
-        ctx.beginPath();
-        results.fillAndStroke.forEach(shape => this._drawShape[shape.type](shape));
-        ctx.fill();
-        ctx.stroke();
+        arr.forEach(result => {
+            result.fill.forEach(shape => this._drawShape[shape.type](shape));
+            ctx.fill();
+            ctx.beginPath();
+
+            result.stroke.forEach(shape => this._drawShape[shape.type](shape));
+            ctx.stroke();
+
+            ctx.beginPath();
+            result.fillAndStroke.forEach(shape => this._drawShape[shape.type](shape));
+            ctx.fill();
+            ctx.stroke();
+        });
 
         if (this._config && this._config.duration) {
             let currentTime = performance.now();
@@ -80,7 +105,7 @@ class DrawEngine {
                 return;
             }
         }
-        requestAnimationFrame(() => this._draw(ctx, fun, x + 0.1));
+        requestAnimationFrame(() => this._draw(ctx, fun, x + funResult.dx));
     }
 
     private _drawShape  = {
@@ -94,6 +119,21 @@ class DrawEngine {
             this._ctx.strokeStyle = point.stroke || "";
             this._ctx.moveTo(transformed.x + r, transformed.y);
             this._ctx.ellipse(transformed.x, transformed.y, r, r, 0, 0, 2 * Math.PI);
+        },
+        line: (shape: DecoratedShape) => {
+            const line = shape as DecoratedLine;
+            const lineWidth = this._virtualCanvas.transformDimensionToCanvas(line.lineWidth || 1);
+            if (!this._ctx) return;
+            this._ctx.strokeStyle = line.stroke || "";
+            this._ctx.lineWidth = lineWidth;
+            if (line.points.length > 0) {
+                const firstPoint = this._virtualCanvas.transformPointToCanvas(line.points[0]);
+                this._ctx.moveTo(firstPoint.x, firstPoint.y);
+            }
+            line.points.slice(1).forEach(point => {
+                const transformed = this._virtualCanvas.transformPointToCanvas(point);
+                this._ctx!.lineTo(transformed.x, transformed.y);
+            });
         }
     }
     /**
