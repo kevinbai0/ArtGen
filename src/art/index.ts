@@ -2,6 +2,7 @@ import circleArtGenerator from "../functions/circles";
 import circlesGen2 from "../functions/circles2";
 import linesGen from "../functions/lines";
 import linesGen2 from "../functions/lines2";
+import particlesGen from "../functions/particles";
 
 export const circles = circleArtGenerator({
     colorRange: {
@@ -18,3 +19,5 @@ export const circles2 = circlesGen2();
 export const lines = linesGen();
 
 export const lines2 = linesGen2();
+
+export const particles = particlesGen();

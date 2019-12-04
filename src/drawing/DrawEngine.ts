@@ -2,7 +2,8 @@ import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, Decora
 import VirtualCanvas from "./VirtualCanvas";
 
 export interface StartConfiguration {
-    duration?: number
+    duration?: number,
+    maxX?: number
 }
 
 type Separation = {
@@ -94,7 +95,7 @@ class DrawEngine {
             ctx.stroke();
         });
 
-        if (this._config && this._config.duration) {
+        if (this._config && (this._config.duration || this._config.maxX)) {
             let currentTime = performance.now();
             let runningTime = currentTime - this._startTime;
 
@@ -102,9 +103,8 @@ class DrawEngine {
 
             this._prevTime = currentTime;
 
-            if (runningTime > this._config.duration) {
-                return;
-            }
+            if (this._config.duration && runningTime > this._config.duration) return;
+            if (this._config.maxX && x + funResult.dx > this._config.maxX) return;
         }
         requestAnimationFrame(() => this._draw(ctx, fun, x + funResult.dx));
     }
@@ -118,6 +118,7 @@ class DrawEngine {
             if (!this._ctx) return;
             this._ctx.fillStyle = point.fill || "";
             this._ctx.strokeStyle = point.stroke || "";
+            this._ctx.lineWidth = point.lineWidth || 1;
             this._ctx.moveTo(transformed.x + r, transformed.y);
             this._ctx.ellipse(transformed.x, transformed.y, r, r, 0, 0, 2 * Math.PI);
         },

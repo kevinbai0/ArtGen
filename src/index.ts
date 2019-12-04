@@ -1,26 +1,31 @@
 import DrawEngine from "./drawing/DrawEngine";
 import State from "./state/State";
 import { addClassName, removeClassName } from "./state/utils";
-import { circles, circles2, lines, lines2 } from "./art";
+import { circles, circles2, lines, lines2, particles } from "./art";
 
 const artboard = <HTMLCanvasElement> document.getElementById("artboard");
 
-let drawEngine = new DrawEngine(lines2, artboard);
+let drawEngine = new DrawEngine(particles, artboard);
 
 drawEngine.dataListener = (fps: number, duration: number) => {
-    let div = document.getElementById("fps-indicator");
+    const div = document.getElementById("fps-indicator");
+    
     if (div) {
-        div.innerHTML = fps.toFixed(2) + "fps\n" + duration.toFixed(0) + "ms";
+        const fpsLabel = document.getElementById("fps-label");
+        const durationLabel = document.getElementById("duration-label");
+        if (fpsLabel) fpsLabel.innerHTML = fps.toFixed(2) + "fps";
+        if (durationLabel) durationLabel.innerHTML = duration.toFixed(0) + "ms";
     }
 }
 
+// Button
 const button = <HTMLButtonElement> document.getElementById("start-button");
 
 const buttonState = new State(false);
 buttonState.bind("listener", newValue => {
     if (newValue) {
         drawEngine.start({
-            duration: 10000
+            duration: 10000,
         });
         button.className = addClassName(button.className, "hidden");
     }
@@ -28,7 +33,9 @@ buttonState.bind("listener", newValue => {
 
 button.onclick = _ => buttonState.update(!buttonState.value);
 
-button.className = addClassName(button.className, "hidden");
+button.className="hidden";
+
+setTimeout(() => buttonState.update(true), 1000);
 /*
 setTimeout(() => {
     button.className = addClassName(button.className, "hover");
@@ -40,4 +47,3 @@ setTimeout(() => {
     }, 100)
 }, 1000)
 */
-setTimeout(() => buttonState.update(true), 1000);

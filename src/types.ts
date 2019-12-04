@@ -24,7 +24,7 @@ export interface PointStyles extends ShapeStyles {
     radius?: number
 }
 
-export interface DecoratedPoint extends Point, PointStyles, DecoratedShape {
+export interface DecoratedPoint extends Point, PointStyles, DecoratedShape, LineStyles {
     type: ShapeType.point
 }
 
@@ -46,7 +46,7 @@ export interface DecoratedLine extends Line, LineStyles, DecoratedShape {
 }
 
 export const Shape = {
-    point: (point: Point & PointStyles & OrderStyle): DecoratedPoint => {
+    point: (point: Point & PointStyles & OrderStyle & LineStyles): DecoratedPoint => {
         return {
             ...point,
             type: ShapeType.point,

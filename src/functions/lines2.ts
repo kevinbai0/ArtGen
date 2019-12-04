@@ -1,4 +1,4 @@
-import { Lambda, Shape, DecoratedLine, Point } from "../types";
+import { Lambda, Shape, Point } from "../types";
 
 const piecewise = () => {
     let arr: Point[] = [];
