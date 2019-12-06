@@ -1,7 +1,7 @@
 import { Lambda, DecoratedPoint, Shape, Point } from "../types";
 
-const particlesGen = (): Lambda => {
-    const len = 800;
+const particlesGen2 = (): Lambda => {
+    const len = 400;
     const radius = 400;
     let particles: Point[] = [...Array(len)].map((_, i) => {
         const theta = i / len * Math.PI;
@@ -10,23 +10,13 @@ const particlesGen = (): Lambda => {
             x: radius * Math.cos(theta),
             y: (i % 2 === 0 ? -1 : 1) * radius * Math.sin(theta)
         }
-    })
-    const len2 = 500;
-    const radius2 = 150;
-    let particles2 = [...Array(len2)].map((_, i) => {
-        const theta = i / len2 * Math.PI;
-        if (i == 0) return { x: radius2, y: 0 };
-        return {
-            x: radius2 * Math.cos(theta),
-            y: (i % 2 === 0 ? -1 : 1) * radius2 * Math.sin(theta)
-        }
-    })
-
-    const decoratedPoint = (point: Point, x: number) => {
+    });
+    const decoratedPoint = (point: Point, x: number, index: number) => {
      return Shape.point({
         ...point,
-        fill: `rgba(120,120,120,${Math.min(1, 0.2 / (Math.pow(x, 1/3) + 1))})`,
+        fill: `rgba(120,120,120,${Math.min(1, 1 / (Math.pow(x, 1/100) + 1))})`,
         radius: 2,
+        stateIndex: index
     }) };
     const lambda: Lambda = (x: number) => {
         /*particles = particles.map((point, i) => (i % 2 === 0 ? {
@@ -40,15 +30,10 @@ const particlesGen = (): Lambda => {
             x: point.x + (Math.random() * 2 - 1) * Math.max(3, x / 100),
             y: point.y + (Math.random() * 2 - 1) * Math.max(3, x / 100)
         }))
-        particles2 = particles2.map(point => ({
-            x: point.x + (Math.random() * 2 - 1) * Math.max(4, x / 200),
-            y: point.y + (Math.random() * 2 - 1) * Math.max(4, x / 200)
-        }))
-        
+
         return {
             shapes: [
-                ...particles.map((point, i) => decoratedPoint(point, x)),
-                ...particles2.map((point, i) => decoratedPoint(point, x))
+                ...particles.map((point, i) => decoratedPoint(point, x, i)),
             ],
             dx: 1,
         }
@@ -56,4 +41,4 @@ const particlesGen = (): Lambda => {
     return lambda;
 }
 
-export default particlesGen;
+export default particlesGen2;

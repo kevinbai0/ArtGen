@@ -1,6 +1,6 @@
 export enum ShapeType {
     point = "point",
-    line = "line"
+    line = "line",
 }
 
 export interface ShapeStyles {
@@ -11,6 +11,7 @@ export interface ShapeStyles {
 export interface DecoratedShape extends ShapeStyles {
     type: ShapeType
     zIndex: number
+    stateIndex?: number
 }
 
 export type Color = string;
@@ -38,6 +39,7 @@ export interface LineStyles extends ShapeStyles {
 
 export interface OrderStyle {
     zIndex?: number
+    stateIndex?: number
 }
 
 export interface DecoratedLine extends Line, LineStyles, DecoratedShape {
@@ -50,7 +52,8 @@ export const Shape = {
         return {
             ...point,
             type: ShapeType.point,
-            zIndex: point.zIndex || 0
+            zIndex: point.zIndex || 0,
+            ...(point.stateIndex && { stateIndex: point.stateIndex })
         }
     },
     line: (line: Line & LineStyles & OrderStyle & { range?: Range<number | string>}): DecoratedLine => {
@@ -58,7 +61,8 @@ export const Shape = {
             ...line,
             range: line.range || ["0%", "100%"],
             type: ShapeType.line,
-            zIndex: line.zIndex || 0
+            zIndex: line.zIndex || 0,
+            ...(line.stateIndex && { stateIndex: line.stateIndex })
         }
     }
 }

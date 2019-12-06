@@ -12,6 +12,8 @@ type Separation = {
     fillAndStroke: DecoratedShape[]
 }
 
+type IndexedSeparationMap = Map<number, Separation>;
+
 class DrawEngine {
     private _virtualCanvas: VirtualCanvas
     private _ctx: CanvasRenderingContext2D | null
@@ -19,6 +21,8 @@ class DrawEngine {
     private _startTime: number = 0
     private _prevTime: number = 0
     private _config?: StartConfiguration
+    private _unchangedState: Map<number, Separation>
+    private _state: Map<number, DecoratedShape>
 
     constructor(fun: Lambda, artboard: HTMLCanvasElement) {
         this._functionMapper = fun;
@@ -29,15 +33,10 @@ class DrawEngine {
         this._virtualCanvas = new VirtualCanvas(artboard.width, artboard.height);
 
         this._ctx = artboard.getContext("2d");
+        this._state = new Map<number, DecoratedShape>();
+        this._unchangedState = new Map<number, Separation>();
 
         this._startTime = 0;
-    }
-
-    /**
-     * Allows users to set the default context settings
-     */
-    setContextSettings = (callback: (ctx: CanvasRenderingContext2D) => void) => {
-        if (this._ctx) callback(this._ctx);
     }
 
     /**
@@ -47,69 +46,115 @@ class DrawEngine {
     start(config?: StartConfiguration) {
         if (!this._ctx) return;
         this._startTime = performance.now();
-
         this._config = config;
+
+        // clear the state
+        this._state = new Map<number, DecoratedShape>();
+        this._unchangedState = new Map<number, Separation>();
+
         requestAnimationFrame(() => this._draw(this._ctx!, this._functionMapper, 0));
     }
 
     /**
      * Draws the 
      */
-    private _draw = (ctx: CanvasRenderingContext2D, fun: Lambda, x: number) => {
+    private _draw = (ctx: CanvasRenderingContext2D, fun: Lambda, x: number): void => {
+        if (!this._ctx) return;
+
         const funResult = fun(x);
-        const results = funResult.shapes.reduce((acc: Map<number, Separation>, shape) => {
-            if (!acc.get(shape.zIndex)) acc.set(shape.zIndex, { fill: [], stroke: [], fillAndStroke: []});
+
+        const next = () => this._iterate(x, funResult.dx, () => this._draw(ctx, fun, x + funResult.dx));
+
+        function addToIndexedSeparationMap(shape: DecoratedShape, acc: IndexedSeparationMap) {
+            if (!acc.get(shape.zIndex)) return acc.set(shape.zIndex, { fill: [], stroke: [], fillAndStroke: []});
             if (shape.fill && shape.stroke) acc.get(shape.zIndex)!.fillAndStroke.push(shape);
             else if (shape.fill) acc.get(shape.zIndex)!.fill.push(shape);
             else if (shape.stroke) acc.get(shape.zIndex)!.stroke.push(shape);
             return acc;
-        }, new Map<number, Separation>());
+        }
 
-        let arr: Separation[] = [];
-        results.forEach(result => arr.push(result));
-
-        arr.sort((a, b) => {
-            const getZIndex = (sep: Separation) => {
-                if (sep.fill.length > 0) return sep.fill[0].zIndex;
-                if (sep.stroke.length > 0) return sep.stroke[0].zIndex;
-                if (sep.fillAndStroke.length > 0) return sep.fillAndStroke[0].zIndex;
+        // separate points between points that have changed state, and points that have not
+        const states = funResult.shapes.reduce((accum, shape) => {
+            if (shape.stateIndex === undefined) {
+                this._unchangedState = addToIndexedSeparationMap(shape, this._unchangedState);
+                return { ...accum, staticState: addToIndexedSeparationMap(shape, accum.staticState) };
             }
-            let orderA = getZIndex(a);
-            let orderB = getZIndex(b);
-            if (!orderA || !orderB) return 1;
-            return orderA - orderB;
-        });
+            
+            if (!this._state.has(shape.stateIndex)) {
+                this._state.set(shape.stateIndex, shape);
+            }
+            this._state.set(shape.stateIndex, shape);
+            return { ...accum, changeState: true }
+        }, { changeState: false, staticState: new Map<number, Separation>() });
 
-        arr.forEach(result => {
-            ctx.beginPath();
-            result.fill.forEach(shape => this._drawShape[shape.type](shape));
-            ctx.fill();
+        // if there are no changes to be made, then render as usual
+        if (!states.changeState) {
+            this._render(ctx, states.staticState.entries());
+            return next();
+        }
 
-            ctx.beginPath();
-            result.stroke.forEach(shape => this._drawShape[shape.type](shape));
-            ctx.stroke();
+        /**
+         * if there are changes to be made, 
+         *  1) Clear the canvas
+         *  2) Redraw elements from saved static state
+         *  3) Redraw the newly updated state
+         * 
+         * Note, if there are a lot of points (> 2000) already drawn in static state, this will be very slow
+         * Don't have > 1000 points saved in the state
+         */
 
-            ctx.beginPath();
-            result.fillAndStroke.forEach(shape => this._drawShape[shape.type](shape));
-            ctx.fill();
-            ctx.stroke();
-        });
+        // 1) Clear the canvas
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+        // 2) Redraw elements from saved unchanged state
+        this._render(ctx, this._unchangedState.entries());
+
+        // 3) Redraw elements from newly updated state
+        let stateMap = Array.from(this._state.entries())
+            .reduce((accum, entry) => 
+                addToIndexedSeparationMap(entry[1], accum), 
+                new Map<number, Separation>());
+
+        this._render(ctx, stateMap.entries());
+
+        return next();
+    }
+
+    private _iterate(x: number, dx: number, next: () => void) {
         if (this._config && (this._config.duration || this._config.maxX)) {
             let currentTime = performance.now();
             let runningTime = currentTime - this._startTime;
-
+            
             if (this._prevTime !== 0) this.dataListener(1000 / (currentTime - this._prevTime), runningTime);
 
             this._prevTime = currentTime;
 
             if (this._config.duration && runningTime > this._config.duration) return;
-            if (this._config.maxX && x + funResult.dx > this._config.maxX) return;
+            if (this._config.maxX && x + dx > this._config.maxX) return;
         }
-        requestAnimationFrame(() => this._draw(ctx, fun, x + funResult.dx));
+        requestAnimationFrame(() => next());
     }
 
-    private _drawShape  = {
+    private _render(ctx: CanvasRenderingContext2D, entries: IterableIterator<[number, Separation]>) {
+        return Array.from(entries)
+                .sort((a, b) => a[0] - b[0])
+                .forEach(result => {
+                    ctx.beginPath();
+                    result[1].fill.forEach(shape => this._drawShape[shape.type](shape));
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    result[1].stroke.forEach(shape => this._drawShape[shape.type](shape));
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    result[1].fillAndStroke.forEach(shape => this._drawShape[shape.type](shape));
+                    ctx.fill();
+                    ctx.stroke();
+                });
+    }
+
+    private _drawShape = {
         point: (shape: DecoratedShape) => {
             const point = shape as DecoratedPoint;
             const transformed = this._virtualCanvas.transformPointToCanvas(point);
