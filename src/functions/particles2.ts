@@ -1,40 +1,41 @@
-import { Lambda, DecoratedPoint, Shape, Point } from "../types";
+import { Lambda, DecoratedPoint, Shape, Point, Line } from "../types";
 
 const particlesGen2 = (): Lambda => {
-    const len = 400;
-    const radius = 400;
-    let particles: Point[] = [...Array(len)].map((_, i) => {
-        const theta = i / len * Math.PI;
-        if (i == 0) return { x: radius, y: 0 };
-        return {
-            x: radius * Math.cos(theta),
-            y: (i % 2 === 0 ? -1 : 1) * radius * Math.sin(theta)
+    let sets: Point[][] = [];
+    for (let p = 0; p < 5; p++) {
+        let points: Point[] = []
+        for (let i = 0; i < 150; ++i) {
+            points.push({x: Math.random() * 1024 - 512, y: Math.random() * 1024 - 512});
         }
-    });
-    const decoratedPoint = (point: Point, x: number, index: number) => {
+        sets.push(points);
+    }
+    const decoratedPoint = (point: Point, x: number, index: number, state: boolean) => {
      return Shape.point({
         ...point,
-        fill: `rgba(120,120,120,${Math.min(1, 1 / (Math.pow(x, 1/100) + 1))})`,
-        radius: 2,
-        stateIndex: index
+        fill: `rgba(${x / 600 * 200},200,${200 * (1 - x / 600)},1)`,
+        radius: 3,
+        ...(state && { stateIndex: index })
     }) };
     const lambda: Lambda = (x: number) => {
-        /*particles = particles.map((point, i) => (i % 2 === 0 ? {
-            x: point.x + Math.random() * (x / 200) - 2,
-            y: point.y + Math.random() * (x / 200) - 2
-        } : {
-            x: point.x + Math.random() * 4 - x / 200,
-            y: point.y + Math.random() * 4 - x / 200
-        }))*/
-        particles = particles.map(point => ({
-            x: point.x + (Math.random() * 2 - 1) * Math.max(3, x / 100),
-            y: point.y + (Math.random() * 2 - 1) * Math.max(3, x / 100)
-        }))
-
+        if (x < 1000) {
+            sets = sets.map((points, s) => 
+                points.map((point, i) => {
+                    const size = points.length;
+                    let targetAngle = (i / size * 2 * Math.PI) + (x / 600) * Math.PI;
+                    let targetX = 300 * Math.cos(targetAngle) + (s < 2 ? -x / 3 : x / 3) - s * 10;
+                    let targetY = 300 * Math.sin(targetAngle) + (s % 2 === 0 ? -x / 3 : x / 3) - s * 10;
+                    let dx = targetX - point.x;
+                    let dy = targetY - point.y;
+                    return { x: point.x + dx / 80, y: point.y + dy / 80 };
+                })
+            );
+        }
+        let allPoints: DecoratedPoint[] = [];
+        sets.forEach((set, index) => {
+            set.forEach((point, i) => allPoints.push(decoratedPoint(point, x, i + index * 200, x < 300)));
+        })
         return {
-            shapes: [
-                ...particles.map((point, i) => decoratedPoint(point, x, i)),
-            ],
+            shapes: allPoints,
             dx: 1,
         }
     }

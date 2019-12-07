@@ -28,13 +28,11 @@ const circleArtGenerator = (config?: CirclesConfig) => {
     const radiusRandomizer = (r: MultiNumberRange = config && config.radius || [5,5]) => {
         return randomized(r);
     }
-
     const circles: Lambda = (x: number) => {
         let r = x;
         let points = [];
         let max = 4 * r;
         if (max < 5) max = 5;
-    
         for (let i = 0; i < max; ++i) {
             let y = Math.random() * 2 * r - r;
             let newX = (Math.random() > 0.5 ? -1 : 1) * Math.sqrt(r * r - y * y);

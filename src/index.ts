@@ -7,13 +7,18 @@ const artboard = <HTMLCanvasElement> document.getElementById("artboard");
 
 let drawEngine = new DrawEngine(particles2, artboard);
 
+let lastN: number[] = [];
+let fpsCount = 0;
+
 drawEngine.dataListener = (fps: number, duration: number) => {
     const div = document.getElementById("fps-indicator");
     
     if (div) {
         const fpsLabel = document.getElementById("fps-label");
         const durationLabel = document.getElementById("duration-label");
-        if (fpsLabel) fpsLabel.innerHTML = fps.toFixed(2) + "fps";
+        lastN.push(fps);
+        if (lastN.length > 50) lastN = lastN.slice(1);
+        if (fpsLabel) fpsLabel.innerHTML = fps.toFixed(2) + "fps, avg: " + (lastN.reduce((acc, num) => acc + num, 0) / lastN.length).toFixed(0) + "fps";
         if (durationLabel) durationLabel.innerHTML = duration.toFixed(0) + "ms";
     }
 }
@@ -33,9 +38,9 @@ buttonState.bind("listener", newValue => {
 
 button.onclick = _ => buttonState.update(!buttonState.value);
 
-/*button.className="hidden";
+button.className="hidden";
 
-setTimeout(() => buttonState.update(true), 1000);*/
+setTimeout(() => buttonState.update(true), 1000);
 
 /*
 setTimeout(() => {

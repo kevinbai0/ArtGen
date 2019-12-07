@@ -63,10 +63,10 @@ class DrawEngine {
 
         const funResult = fun(x);
 
-        const next = () => this._iterate(x, funResult.dx, () => this._draw(ctx, fun, x + funResult.dx));
+        const next = () => this._iterate(x, funResult.dx, (dx) => this._draw(ctx, fun, x + dx));
 
         function addToIndexedSeparationMap(shape: DecoratedShape, acc: IndexedSeparationMap) {
-            if (!acc.get(shape.zIndex)) return acc.set(shape.zIndex, { fill: [], stroke: [], fillAndStroke: []});
+            if (!acc.get(shape.zIndex)) acc.set(shape.zIndex, { fill: [], stroke: [], fillAndStroke: []});
             if (shape.fill && shape.stroke) acc.get(shape.zIndex)!.fillAndStroke.push(shape);
             else if (shape.fill) acc.get(shape.zIndex)!.fill.push(shape);
             else if (shape.stroke) acc.get(shape.zIndex)!.stroke.push(shape);
@@ -74,9 +74,11 @@ class DrawEngine {
         }
 
         // separate points between points that have changed state, and points that have not
+        let count = 0;
         const states = funResult.shapes.reduce((accum, shape) => {
             if (shape.stateIndex === undefined) {
                 this._unchangedState = addToIndexedSeparationMap(shape, this._unchangedState);
+                count += 1;
                 return { ...accum, staticState: addToIndexedSeparationMap(shape, accum.staticState) };
             }
             
@@ -120,19 +122,21 @@ class DrawEngine {
         return next();
     }
 
-    private _iterate(x: number, dx: number, next: () => void) {
+    private _iterate(x: number, dx: number, next: (dx: number) => void) {
         if (this._config && (this._config.duration || this._config.maxX)) {
             let currentTime = performance.now();
             let runningTime = currentTime - this._startTime;
+            const fps = 1000 / (currentTime - this._prevTime);
             
-            if (this._prevTime !== 0) this.dataListener(1000 / (currentTime - this._prevTime), runningTime);
+            if (this._prevTime !== 0) this.dataListener(fps, runningTime);
 
             this._prevTime = currentTime;
 
             if (this._config.duration && runningTime > this._config.duration) return;
             if (this._config.maxX && x + dx > this._config.maxX) return;
+            return void requestAnimationFrame(() => next(dx));
         }
-        requestAnimationFrame(() => next());
+        return void requestAnimationFrame(() => next(dx));
     }
 
     private _render(ctx: CanvasRenderingContext2D, entries: IterableIterator<[number, Separation]>) {
@@ -203,4 +207,5 @@ function getRange(range: Range<number | string>, length: number): Range<number> 
 function bounded(num: number, lower: number, upper: number) {
     return Math.min(Math.max(num,lower), upper);
 }
+
 export default DrawEngine;
