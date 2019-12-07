@@ -3,6 +3,8 @@ export enum ShapeType {
     line = "line",
 }
 
+export type Color = string;
+
 export interface ShapeStyles {
     fill?: Color
     stroke?: Color
@@ -14,10 +16,8 @@ export interface DecoratedShape extends ShapeStyles {
     stateIndex?: number
 }
 
-export type Color = string;
-
 export interface Point {
-    x: number,
+    x: number
     y: number
 }
 
@@ -47,8 +47,13 @@ export interface DecoratedLine extends Line, LineStyles, DecoratedShape {
     range: Range<number | string>
 }
 
+interface PointConstructor extends Point,  PointStyles, OrderStyle, LineStyles {};
+interface LineConstructor extends Line, LineStyles, OrderStyle { 
+    range?: Range<number | string>
+}
+
 export const Shape = {
-    point: (point: Point & PointStyles & OrderStyle & LineStyles): DecoratedPoint => {
+    point: (point: PointConstructor): DecoratedPoint => {
         return {
             ...point,
             type: ShapeType.point,
@@ -56,7 +61,7 @@ export const Shape = {
             ...(point.stateIndex && { stateIndex: point.stateIndex })
         }
     },
-    line: (line: Line & LineStyles & OrderStyle & { range?: Range<number | string>}): DecoratedLine => {
+    line: (line: LineConstructor): DecoratedLine => {
         return {
             ...line,
             range: line.range || ["0%", "100%"],
@@ -71,3 +76,12 @@ export type Lambda = (x: number) => { shapes: DecoratedShape[], dx: number };
 
 export type Range<T> = [T, T];
 export type MultiRange<T> = Range<T> | Array<Range<T>>;
+
+export function updateShapes<T extends DecoratedShape>(shapes: T[], callback: (shape: T, index: number) => any) {
+    shapes.forEach((shape, i) => {
+        let obj = callback(shape, i);
+        for (const key in obj) {
+            (shape as any)[key] = obj[key];
+        }
+    });
+}

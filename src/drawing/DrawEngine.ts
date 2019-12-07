@@ -14,6 +14,38 @@ type Separation = {
 
 type IndexedSeparationMap = Map<number, Separation>;
 
+class TimeTracker {
+    private _entries: Map<string, number>;
+    private _start: number
+    constructor() {
+        this._entries = new Map();
+        this._start = 0;
+    }
+
+    start() {
+        this._entries.clear();
+        this._start = performance.now();
+        this._entries.set("_start", this._start);
+    }
+
+    addBreakpoint(name: string) {
+        this._entries.set(name, performance.now());
+    }
+
+    output() {
+        let end = performance.now();
+        let arr = Array.from(this._entries);
+        return `${arr.map((time, i) => 
+                `${time[0]}: ${(i >= 1 ? time[1] - arr[i-1][1] : 0).toFixed(2)}ms, elapsed: ${(time[1] - this._start).toFixed(2)}ms`
+            ).join("\n")}\nTotal Time: ${(end - this._start).toFixed(2)}ms
+        `;
+    }
+
+    timeLapsed() {
+        return performance.now() - this._start;
+    }
+}
+
 class DrawEngine {
     private _virtualCanvas: VirtualCanvas
     private _ctx: CanvasRenderingContext2D | null
@@ -23,6 +55,7 @@ class DrawEngine {
     private _config?: StartConfiguration
     private _unchangedState: Map<number, Separation>
     private _state: Map<number, DecoratedShape>
+    private _timeTracker: TimeTracker
 
     constructor(fun: Lambda, artboard: HTMLCanvasElement) {
         this._functionMapper = fun;
@@ -37,6 +70,7 @@ class DrawEngine {
         this._unchangedState = new Map<number, Separation>();
 
         this._startTime = 0;
+        this._timeTracker = new TimeTracker();
     }
 
     /**
@@ -59,39 +93,46 @@ class DrawEngine {
      * Draws the 
      */
     private _draw = (ctx: CanvasRenderingContext2D, fun: Lambda, x: number): void => {
+        this._timeTracker.start();
         if (!this._ctx) return;
 
         const funResult = fun(x);
+        this._timeTracker.addBreakpoint("calculate");
 
-        const next = () => this._iterate(x, funResult.dx, (dx) => this._draw(ctx, fun, x + dx));
+        const next = () => this._iterate(x, funResult.dx, (dx) => {
+            this._draw(ctx, fun, x + dx)
+        });
 
         function addToIndexedSeparationMap(shape: DecoratedShape, acc: IndexedSeparationMap) {
             if (!acc.get(shape.zIndex)) acc.set(shape.zIndex, { fill: [], stroke: [], fillAndStroke: []});
             if (shape.fill && shape.stroke) acc.get(shape.zIndex)!.fillAndStroke.push(shape);
             else if (shape.fill) acc.get(shape.zIndex)!.fill.push(shape);
             else if (shape.stroke) acc.get(shape.zIndex)!.stroke.push(shape);
-            return acc;
         }
 
         // separate points between points that have changed state, and points that have not
-        let count = 0;
         const states = funResult.shapes.reduce((accum, shape) => {
             if (shape.stateIndex === undefined) {
-                this._unchangedState = addToIndexedSeparationMap(shape, this._unchangedState);
-                count += 1;
-                return { ...accum, staticState: addToIndexedSeparationMap(shape, accum.staticState) };
+                addToIndexedSeparationMap(shape, this._unchangedState);
+                addToIndexedSeparationMap(shape, accum.staticState);
+                return accum;
             }
-            
+
             if (!this._state.has(shape.stateIndex)) {
                 this._state.set(shape.stateIndex, shape);
             }
             this._state.set(shape.stateIndex, shape);
-            return { ...accum, changeState: true }
+            accum.changeState = true;
+            return accum;
         }, { changeState: false, staticState: new Map<number, Separation>() });
+
+        this._timeTracker.addBreakpoint("reduce all");
 
         // if there are no changes to be made, then render as usual
         if (!states.changeState) {
             this._render(ctx, states.staticState.entries());
+            this._timeTracker.addBreakpoint("render static");
+            if (this._timeTracker.timeLapsed() > 15) console.log(this._timeTracker.output());
             return next();
         }
 
@@ -113,12 +154,17 @@ class DrawEngine {
 
         // 3) Redraw elements from newly updated state
         let stateMap = Array.from(this._state.entries())
-            .reduce((accum, entry) => 
-                addToIndexedSeparationMap(entry[1], accum), 
+            .reduce((accum, entry) => {
+                addToIndexedSeparationMap(entry[1], accum)
+                return accum;
+            }, 
                 new Map<number, Separation>());
+        this._timeTracker.addBreakpoint("reduce state");
 
         this._render(ctx, stateMap.entries());
+        this._timeTracker.addBreakpoint("render state");
 
+        if (this._timeTracker.timeLapsed() > 15) console.log(this._timeTracker.output());
         return next();
     }
 
@@ -134,54 +180,65 @@ class DrawEngine {
 
             if (this._config.duration && runningTime > this._config.duration) return;
             if (this._config.maxX && x + dx > this._config.maxX) return;
-            return void requestAnimationFrame(() => next(dx));
+            return void requestAnimationFrame(_ => next(dx));
         }
-        return void requestAnimationFrame(() => next(dx));
+        return void requestAnimationFrame(_ => next(dx));
     }
 
     private _render(ctx: CanvasRenderingContext2D, entries: IterableIterator<[number, Separation]>) {
-        return Array.from(entries)
-                .sort((a, b) => a[0] - b[0])
-                .forEach(result => {
-                    ctx.beginPath();
-                    result[1].fill.forEach(shape => this._drawShape[shape.type](shape));
-                    ctx.fill();
+        let arr = Array.from(entries)
+                    .sort((a, b) => a[0] - b[0]);
+        arr.forEach(result => {
+            ctx.beginPath();
+            result[1].fill.forEach(shape => this._drawShape[shape.type](shape, ctx));
+            ctx.fill();
 
-                    ctx.beginPath();
-                    result[1].stroke.forEach(shape => this._drawShape[shape.type](shape));
-                    ctx.stroke();
+            ctx.beginPath();
+            result[1].stroke.forEach(shape => this._drawShape[shape.type](shape, ctx));
+            ctx.stroke();
 
-                    ctx.beginPath();
-                    result[1].fillAndStroke.forEach(shape => this._drawShape[shape.type](shape));
-                    ctx.fill();
-                    ctx.stroke();
-                });
+            ctx.beginPath();
+            result[1].fillAndStroke.forEach(shape => this._drawShape[shape.type](shape, ctx));
+            ctx.fill();
+            ctx.stroke();
+        });
     }
 
     private _drawShape = {
-        point: (shape: DecoratedShape) => {
+        prevFill: "",
+        prevStroke: "",
+        prevLineWidth: 1,
+        point: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
             const point = shape as DecoratedPoint;
             const transformed = this._virtualCanvas.transformPointToCanvas(point);
             const r = this._virtualCanvas.transformDimensionToCanvas(point.radius || 5); // get radius from function
-
-            if (!this._ctx) return;
-            this._ctx.fillStyle = point.fill || "";
-            this._ctx.strokeStyle = point.stroke || "";
-            this._ctx.lineWidth = point.lineWidth || 1;
-            this._ctx.moveTo(transformed.x + r, transformed.y);
-            this._ctx.ellipse(transformed.x, transformed.y, r, r, 0, 0, 2 * Math.PI);
+            
+            if (this._drawShape.prevFill !== point.fill) {
+                ctx.fillStyle = point.fill || "";
+                this._drawShape.prevFill = point.fill || "";
+            }
+            if (this._drawShape.prevStroke !== point.stroke) {
+                ctx.strokeStyle = point.stroke || "";
+                this._drawShape.prevStroke = point.stroke || "";
+            }
+            if (this._drawShape.prevLineWidth !== point.lineWidth) {
+                ctx.lineWidth = this._virtualCanvas.transformDimensionToCanvas(point.lineWidth || 1);
+                this._drawShape.prevLineWidth = point.lineWidth || 1;
+            }
+            //ctx.lineWidth = point.lineWidth || 1;
+            ctx.moveTo(transformed.x + r, transformed.y);
+            ctx.ellipse(transformed.x, transformed.y, r, r, 0, 0, 2 * Math.PI);
         },
-        line: (shape: DecoratedShape) => {
+        line: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
             const line = shape as DecoratedLine;
             let range = getRange(line.range, line.points.length);
             const lineWidth = this._virtualCanvas.transformDimensionToCanvas(line.lineWidth || 1);
-            if (!this._ctx) return;
-            this._ctx.strokeStyle = line.stroke || "";
-            this._ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = line.stroke || "";
+            ctx.lineWidth = lineWidth;
             if (line.points.length === 0) return;
 
             const firstTransformedPoint = this._virtualCanvas.transformPointToCanvas(line.points[range[0]]);
-            this._ctx.moveTo(firstTransformedPoint.x, firstTransformedPoint.y);
+            ctx.moveTo(firstTransformedPoint.x, firstTransformedPoint.y);
             line.points.slice(range[0], range[1] + 1).forEach(point => {
                 const transformed = this._virtualCanvas.transformPointToCanvas(point);
                 this._ctx!.lineTo(transformed.x, transformed.y);
