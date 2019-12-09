@@ -1,17 +1,13 @@
-import { Lambda, DecoratedPoint, Shape, Point, Line, updateShapes } from "../types";
+import { Lambda, Shape, updateShapes, generate } from "../types";
 
 const particlesGen2 = (): Lambda => {
-    let points: DecoratedPoint[] = []
-
-    for (let p = 0; p < 1000; p++) {
-        points.push(Shape.point({
-            x: Math.random() * 1024 - 512,
-            y: Math.random() * 1024 - 512,
-            fill: `rgba(${0 / 600 * 200},200,${200 * (1 - 0 / 600)},1)`,
-            radius: 3,
-            stateIndex: p
-        }));
-    }
+    let points = generate(1000, (i) => Shape.point({
+        x: Math.random() * 1024 - 512,
+        y: Math.random() * 1024 - 512,
+        fill: `rgba(${0 / 600 * 200},200,${200 * (1 - 0 / 600)},1)`,
+        radius: 3,
+        stateIndex: i
+    }));
 
     const lambda: Lambda = (x: number) => {
         updateShapes(points, (point, index) => {

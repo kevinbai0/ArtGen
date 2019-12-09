@@ -1,4 +1,4 @@
-import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, DecoratedLine, Range } from "../types";
+import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, DecoratedLine, Range, DecoratedArc } from "../types";
 import VirtualCanvas from "./VirtualCanvas";
 
 export interface StartConfiguration {
@@ -232,17 +232,42 @@ class DrawEngine {
         line: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
             const line = shape as DecoratedLine;
             let range = getRange(line.range, line.points.length);
-            const lineWidth = this._virtualCanvas.transformDimensionToCanvas(line.lineWidth || 1);
-            ctx.strokeStyle = line.stroke || "";
-            ctx.lineWidth = lineWidth;
+            if (this._drawShape.prevStroke !== line.stroke) {
+                ctx.strokeStyle = line.stroke || "";
+                this._drawShape.prevStroke = line.stroke || "";
+            }
+            if (this._drawShape.prevLineWidth !== line.lineWidth) {
+                ctx.lineWidth = this._virtualCanvas.transformDimensionToCanvas(line.lineWidth || 1);
+                this._drawShape.prevLineWidth = line.lineWidth || 1;
+            }
             if (line.points.length === 0) return;
 
             const firstTransformedPoint = this._virtualCanvas.transformPointToCanvas(line.points[range[0]]);
             ctx.moveTo(firstTransformedPoint.x, firstTransformedPoint.y);
-            line.points.slice(range[0], range[1] + 1).forEach(point => {
-                const transformed = this._virtualCanvas.transformPointToCanvas(point);
+            for (let i = range[0]; i < range[1] + 1; ++i) {
+                const transformed = this._virtualCanvas.transformPointToCanvas(line.points[i]);
                 this._ctx!.lineTo(transformed.x, transformed.y);
-            });
+            };
+        },
+        arc: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
+            const arc = shape as DecoratedArc;
+            const transformed = this._virtualCanvas.transformPointToCanvas(arc);
+            const r = this._virtualCanvas.transformDimensionToCanvas(arc.radius); // get radius from function
+            if (this._drawShape.prevFill !== arc.fill) {
+                ctx.fillStyle = arc.fill || "";
+                this._drawShape.prevFill = arc.fill || "";
+            }
+            if (this._drawShape.prevStroke !== arc.stroke) {
+                ctx.strokeStyle = arc.stroke || "";
+                this._drawShape.prevStroke = arc.stroke || "";
+            }
+            if (this._drawShape.prevLineWidth !== arc.lineWidth) {
+                ctx.lineWidth = this._virtualCanvas.transformDimensionToCanvas(arc.lineWidth || 1);
+                this._drawShape.prevLineWidth = arc.lineWidth || 1;
+            }
+
+            ctx.moveTo(transformed.x + Math.cos(arc.start) * r, transformed.y + Math.sin(arc.start) * r);
+            ctx.arc(transformed.x, transformed.y, r, arc.start, arc.end, arc.direction === "counter-clockwise");
         }
     }
     /**

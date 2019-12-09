@@ -1,14 +1,13 @@
 import DrawEngine from "./drawing/DrawEngine";
 import State from "./state/State";
 import { addClassName, removeClassName } from "./state/utils";
-import { circles, circles2, lines, lines2, circles3, particles, particles2 } from "./art";
+import { circles, circles2, lines, lines2, circles3, particles, particles2, particles3, circles4 } from "./art";
 
 const artboard = <HTMLCanvasElement> document.getElementById("artboard");
 
-let drawEngine = new DrawEngine(particles2, artboard);
+let drawEngine = new DrawEngine(circles4, artboard);
 
 let lastN: number[] = [];
-let fpsCount = 0;
 
 drawEngine.dataListener = (fps: number, duration: number) => {
     const div = document.getElementById("fps-indicator");
@@ -38,9 +37,11 @@ buttonState.bind("listener", newValue => {
 
 button.onclick = _ => buttonState.update(!buttonState.value);
 
+
 button.className="hidden";
 
 setTimeout(() => buttonState.update(true), 1000);
+
 
 /*
 setTimeout(() => {
