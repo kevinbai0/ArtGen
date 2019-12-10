@@ -119,3 +119,18 @@ export function updateShapes<T>(shapes: T[], callback: (shape: T, index: number)
 export function generate<T>(count: number, callback: (index: number) => T) {
     return [...Array(count)].map((_, i) => callback(i));
 }
+
+
+
+export type Num = number | MultiRange<number>
+
+export const convertNumber = (num: Num): number => {
+    if (typeof(num) === "number") return num;
+    if (typeof(num[0]) !== "number") {
+        const newRange = num as Array<Range<number>>
+        let rI = Math.floor(Math.random() * num.length);
+        return Math.random() * (newRange[rI][1] - newRange[rI][0]) + newRange[rI][0];
+    }
+    const newRange = num as Range<number>;
+    return Math.random() * (newRange[1] - newRange[0]) + newRange[0];
+}

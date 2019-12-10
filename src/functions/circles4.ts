@@ -1,46 +1,5 @@
-import { Lambda, Shape, DecoratedLine, updateShapes, generate, Point, DecoratedArc } from "../types";
-
-class AnimatingCircle {
-    private _x: number
-    private _y: number
-    private _r: number
-    private _percentage: number
-    private _ended: boolean = false;
-    private _delay: number;
-
-    private _arc: DecoratedArc
-    private _startAngle: number
-
-    get x() { return this._x }
-    get y() { return this._y }
-    get r() { return this._r }
-
-    get ended() { return this._ended }
-
-    constructor(config: DecoratedArc, delay?: number) {
-        this._delay = delay || 0;
-        this._x = config.x;
-        this._y = config.y;
-        this._r = config.radius;
-        this._percentage = 0;
-        this._startAngle = Math.random() * 2 * Math.PI;
-        this._arc = config;
-        this._arc.start = this._startAngle;
-        this._arc.end = this._startAngle;
-    }
-
-    line(delta: number) {
-        /*if (this._delay > 0) {
-            this._delay -= 1;
-            return this._arc;
-        }*/
-        this._percentage += delta;
-        this._arc.end = this._startAngle + this._percentage * Math.PI * 2
-        if (this._percentage > 1.05) this._ended = true;
-        return this._arc;
-    }
-
-}
+import { Lambda, Shape } from "../types";
+import AnimatedCircle from "../animations/AnimatedCircle";
 
 
 
@@ -57,10 +16,8 @@ const circlesGen4 = () => {
     }
 
     let circlesCount = 1;
-    let circles = new Map<number, AnimatingCircle>()
-    circles.set(0, new AnimatingCircle(randomArc(0,0,800)));
-
-    
+    let circles = new Map<number, AnimatedCircle>()
+    circles.set(0, new AnimatedCircle(randomArc(0,0,800)));
 
     const lambda: Lambda = (x: number) => {
         circles.forEach((circle, key) => {
@@ -70,7 +27,7 @@ const circlesGen4 = () => {
             const radius = circle.r * (Math.random() * 0.1 + (circle.r > 50 ? 0.8 : 0.65));
             const dr = circle.r - radius;
             circles.set(circlesCount, 
-                new AnimatingCircle(
+                new AnimatedCircle(
                     randomArc(
                         circle.x + Math.random() * dr - dr / 2,
                         circle.y + Math.random() * dr - dr / 2,
