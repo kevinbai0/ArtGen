@@ -232,6 +232,7 @@ class DrawEngine {
         line: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
             const line = shape as DecoratedLine;
             let range = getRange(line.range, line.points.length);
+
             if (this._drawShape.prevStroke !== line.stroke) {
                 ctx.strokeStyle = line.stroke || "";
                 this._drawShape.prevStroke = line.stroke || "";
@@ -280,7 +281,7 @@ function getRange(range: Range<number | string>, length: number): Range<number> 
     if (typeof(range[0]) === "string") {
         const newRange: Range<number> = [parseFloat(range[0]) / 100.0, parseFloat(range[1] as string) / 100.0];
         if (isNaN(newRange[0]) || isNaN(newRange[1])) return [0, length - 1];
-        return [bounded(newRange[0], 0, 1) * (length - 1), bounded(newRange[1], 0, 1) * (length - 1)];
+        return [Math.round(bounded(newRange[0], 0, 1) * (length - 1)), Math.round(bounded(newRange[1], 0, 1) * (length - 1))];
     }
     const numRange = range as Range<number>;
     return [bounded(numRange[0], 0, length - 1), bounded(numRange[1], 0, length - 1)];
