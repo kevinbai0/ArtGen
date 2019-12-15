@@ -49,6 +49,7 @@ class TimeTracker {
 class DrawEngine {
     private _virtualCanvas: VirtualCanvas
     private _ctx: CanvasRenderingContext2D | null
+    private _backgroundCtx: CanvasRenderingContext2D | null
     private _functionMapper: Lambda
     private _startTime: number = 0
     private _prevTime: number = 0
@@ -57,15 +58,26 @@ class DrawEngine {
     private _state: Map<number, DecoratedShape>
     private _timeTracker: TimeTracker
 
-    constructor(fun: Lambda, artboard: HTMLCanvasElement) {
+    constructor(fun: Lambda, container: HTMLDivElement) {
         this._functionMapper = fun;
         // normalizing to square canvas
-        artboard.width = artboard.clientWidth * 2;
-        artboard.height = artboard.clientHeight * 2;
+        const artboard = document.createElement("canvas");
+        artboard.className = "artgen-canvas"
+        artboard.width = container.clientWidth * 2;
+        artboard.height = container.clientHeight * 2;
+
+        const backgroundArtboard = document.createElement("canvas");
+        backgroundArtboard.className = "artgen-canvas"
+        backgroundArtboard.width = container.clientWidth * 2;
+        backgroundArtboard.height = container.clientHeight * 2;
+
+        container.appendChild(backgroundArtboard);
+        container.appendChild(artboard);
 
         this._virtualCanvas = new VirtualCanvas(artboard.width, artboard.height);
 
         this._ctx = artboard.getContext("2d");
+        this._backgroundCtx = backgroundArtboard.getContext("2d");
         this._state = new Map<number, DecoratedShape>();
         this._unchangedState = new Map<number, Separation>();
 
@@ -78,7 +90,7 @@ class DrawEngine {
      * @param config
      */
     start(config?: StartConfiguration) {
-        if (!this._ctx) return;
+        if (!this._ctx || !this._backgroundCtx) return;
         this._startTime = performance.now();
         this._config = config;
 
@@ -86,21 +98,20 @@ class DrawEngine {
         this._state = new Map<number, DecoratedShape>();
         this._unchangedState = new Map<number, Separation>();
 
-        requestAnimationFrame(() => this._draw(this._ctx!, this._functionMapper, 0));
+        requestAnimationFrame(() => this._draw(this._ctx!, this._backgroundCtx!, this._functionMapper, 0));
     }
 
     /**
      * Draws the 
      */
-    private _draw = (ctx: CanvasRenderingContext2D, fun: Lambda, x: number): void => {
+    private _draw = (ctx: CanvasRenderingContext2D, backgroundCtx: CanvasRenderingContext2D, fun: Lambda, x: number): void => {
         this._timeTracker.start();
-        if (!this._ctx) return;
 
         const funResult = fun(x);
         this._timeTracker.addBreakpoint("calculate");
 
         const next = () => this._iterate(x, funResult.dx, (dx) => {
-            this._draw(ctx, fun, x + dx)
+            this._draw(ctx, backgroundCtx, fun, x + dx)
         });
 
         function addToIndexedSeparationMap(shape: DecoratedShape, acc: IndexedSeparationMap) {
@@ -130,7 +141,7 @@ class DrawEngine {
 
         // if there are no changes to be made, then render as usual
         if (!states.changeState) {
-            this._render(ctx, states.staticState.entries());
+            this._render(backgroundCtx, states.staticState.entries());
             this._timeTracker.addBreakpoint("render static");
             if (this._timeTracker.timeLapsed() > 15) console.log(this._timeTracker.output());
             return next();
@@ -149,8 +160,9 @@ class DrawEngine {
         // 1) Clear the canvas
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        // 2) Redraw elements from saved unchanged state
-        this._render(ctx, this._unchangedState.entries());
+        // 2) Render static elements into the background
+        this._render(backgroundCtx, states.staticState.entries());
+        this._timeTracker.addBreakpoint("render static");
 
         // 3) Redraw elements from newly updated state
         let stateMap = Array.from(this._state.entries())
@@ -247,7 +259,7 @@ class DrawEngine {
             ctx.moveTo(firstTransformedPoint.x, firstTransformedPoint.y);
             for (let i = range[0]; i < range[1] + 1; ++i) {
                 const transformed = this._virtualCanvas.transformPointToCanvas(line.points[i]);
-                this._ctx!.lineTo(transformed.x, transformed.y);
+                ctx.lineTo(transformed.x, transformed.y);
             };
         },
         arc: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {

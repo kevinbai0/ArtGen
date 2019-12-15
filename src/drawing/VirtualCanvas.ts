@@ -25,7 +25,7 @@ class VirtualCanvas {
 
     transformDimensionToCanvas = (value: number): number => {
         let maxScale = Math.max(this._scaleX, this._scaleY);
-        return Math.ceil(maxScale * value);
+        return maxScale * value;
     }
 }
 
