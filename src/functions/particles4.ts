@@ -1,4 +1,4 @@
-import { Lambda, generate, Shape, updateShapes } from "../types";
+import { Lambda, generate, Shape, updateShapes, unwrap } from "../types";
 
 const particlesGen4 = (): Lambda => {
     const baseParticles = generate(500, i => {
@@ -32,8 +32,8 @@ const particlesGen4 = (): Lambda => {
             let dX = Math.random() * (x / 30) * Math.cos(theta + Math.random() * 0.2 - 0.1);
             let dY = Math.random() * (x / 30) * Math.sin(theta + Math.random() * 0.2 - 0.1);
             return {
-                x: point.x + dX + Math.random() * 4 - 2,
-                y: point.y + dY + Math.random() * 4 - 2,
+                x: unwrap(point.x) + dX + Math.random() * 4 - 2,
+                y: unwrap(point.y) + dY + Math.random() * 4 - 2,
                 fill: `rgba(0, 0, 0, ${Math.max(0.5 - i / 600, 0.01)})`,
                 radius: Math.max(1, x / 30)
             }

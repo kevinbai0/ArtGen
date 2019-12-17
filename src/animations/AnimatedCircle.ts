@@ -1,15 +1,15 @@
-import { DecoratedArc } from "../types";
+import { DecoratedArc, Value, unwrap } from "../types";
 
 class AnimatedCircle {
-    private _x: number
-    private _y: number
-    private _r: number
+    private _x: Value
+    private _y: Value
+    private _r: Value
     private _percentage: number
     private _ended: boolean = false;
     private _delay: number;
 
     private _arc: DecoratedArc
-    private _startAngle: number
+    private _startAngle: Value
 
     get x() { return this._x }
     get y() { return this._y }
@@ -35,7 +35,7 @@ class AnimatedCircle {
             return this._arc;
         }
         this._percentage += delta;
-        this._arc.end = this._startAngle + this._percentage * Math.PI * 2
+        this._arc.end = unwrap(this._startAngle) + this._percentage * Math.PI * 2
         if (this._percentage > 1.05) this._ended = true;
         return this._arc;
     }

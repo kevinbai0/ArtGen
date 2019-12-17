@@ -1,4 +1,4 @@
-import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, DecoratedLine, Range, DecoratedArc } from "../types";
+import { Lambda, Point, DecoratedPoint, ShapeType, DecoratedShape, Shape, DecoratedLine, Range, DecoratedArc, Value, unwrap, Color, unwrapColor } from "../types";
 import VirtualCanvas from "./VirtualCanvas";
 
 export interface StartConfiguration {
@@ -219,35 +219,37 @@ class DrawEngine {
     private _drawShape = {
         prevFill: "",
         prevStroke: "",
-        prevLineWidth: 1,
+        prevLineWidth: 1 as Value,
         point: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
             const point = shape as DecoratedPoint;
             const transformed = this._virtualCanvas.transformPointToCanvas(point);
             const r = this._virtualCanvas.transformDimensionToCanvas(point.radius || 5); // get radius from function
             
             if (this._drawShape.prevFill !== point.fill) {
-                ctx.fillStyle = point.fill || "";
-                this._drawShape.prevFill = point.fill || "";
+                ctx.fillStyle = unwrapColor(point.fill || "");
+                this._drawShape.prevFill = unwrapColor(point.fill || "");
             }
             if (this._drawShape.prevStroke !== point.stroke) {
-                ctx.strokeStyle = point.stroke || "";
-                this._drawShape.prevStroke = point.stroke || "";
+                ctx.strokeStyle = unwrapColor(point.stroke || "");
+                this._drawShape.prevStroke = unwrapColor(point.stroke || "");
             }
             if (this._drawShape.prevLineWidth !== point.lineWidth) {
                 ctx.lineWidth = this._virtualCanvas.transformDimensionToCanvas(point.lineWidth || 1);
                 this._drawShape.prevLineWidth = point.lineWidth || 1;
             }
             //ctx.lineWidth = point.lineWidth || 1;
-            ctx.moveTo(transformed.x + r, transformed.y);
-            ctx.ellipse(transformed.x, transformed.y, r, r, 0, 0, 2 * Math.PI);
+            const x = unwrap(transformed.x);
+            const y = unwrap(transformed.y);
+            ctx.moveTo(x + r, y);
+            ctx.ellipse(x, y, r, r, 0, 0, 2 * Math.PI);
         },
         line: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
             const line = shape as DecoratedLine;
             let range = getRange(line.range, line.points.length);
 
             if (this._drawShape.prevStroke !== line.stroke) {
-                ctx.strokeStyle = line.stroke || "";
-                this._drawShape.prevStroke = line.stroke || "";
+                ctx.strokeStyle = unwrapColor(line.stroke || "");
+                this._drawShape.prevStroke = unwrapColor(line.stroke || "");
             }
             if (this._drawShape.prevLineWidth !== line.lineWidth) {
                 ctx.lineWidth = this._virtualCanvas.transformDimensionToCanvas(line.lineWidth || 1);
@@ -256,10 +258,10 @@ class DrawEngine {
             if (line.points.length === 0) return;
 
             const firstTransformedPoint = this._virtualCanvas.transformPointToCanvas(line.points[range[0]]);
-            ctx.moveTo(firstTransformedPoint.x, firstTransformedPoint.y);
+            ctx.moveTo(unwrap(firstTransformedPoint.x), unwrap(firstTransformedPoint.y));
             for (let i = range[0]; i < range[1] + 1; ++i) {
                 const transformed = this._virtualCanvas.transformPointToCanvas(line.points[i]);
-                ctx.lineTo(transformed.x, transformed.y);
+                ctx.lineTo(unwrap(transformed.x), unwrap(transformed.y));
             };
         },
         arc: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
@@ -267,20 +269,24 @@ class DrawEngine {
             const transformed = this._virtualCanvas.transformPointToCanvas(arc);
             const r = this._virtualCanvas.transformDimensionToCanvas(arc.radius); // get radius from function
             if (this._drawShape.prevFill !== arc.fill) {
-                ctx.fillStyle = arc.fill || "";
-                this._drawShape.prevFill = arc.fill || "";
+                ctx.fillStyle = unwrapColor(arc.fill || "");
+                this._drawShape.prevFill = unwrapColor(arc.fill || "");
             }
             if (this._drawShape.prevStroke !== arc.stroke) {
-                ctx.strokeStyle = arc.stroke || "";
-                this._drawShape.prevStroke = arc.stroke || "";
+                ctx.strokeStyle = unwrapColor(arc.stroke || "");
+                this._drawShape.prevStroke = unwrapColor(arc.stroke || "");
             }
             if (this._drawShape.prevLineWidth !== arc.lineWidth) {
                 ctx.lineWidth = this._virtualCanvas.transformDimensionToCanvas(arc.lineWidth || 1);
                 this._drawShape.prevLineWidth = arc.lineWidth || 1;
             }
 
-            ctx.moveTo(transformed.x + Math.cos(arc.start) * r, transformed.y + Math.sin(arc.start) * r);
-            ctx.arc(transformed.x, transformed.y, r, arc.start, arc.end, arc.direction === "counter-clockwise");
+            const x = unwrap(transformed.x);
+            const y = unwrap(transformed.y);
+            const arcStart = unwrap(arc.start);
+            const arcEnd = unwrap(arc.end);
+            ctx.moveTo(x + Math.cos(arcStart) * r, y + Math.sin(arcStart) * r);
+            ctx.arc(x, y, r, arcStart, arcEnd, arc.direction === "counter-clockwise");
         }
     }
     /**

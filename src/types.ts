@@ -4,7 +4,14 @@ export enum ShapeType {
     arc = "arc"
 }
 
-export type Color = string;
+export interface RGBA {
+    r: Value
+    g: Value
+    b: Value
+    a: Value
+}
+
+export type Color = string | RGBA;
 
 export interface ShapeStyles {
     fill?: Color
@@ -24,12 +31,12 @@ export interface DecoratedShape extends ShapeStyles {
 }
 
 export interface Point {
-    x: number
-    y: number
+    x: Value
+    y: Value
 }
 
 export interface PointStyles extends ShapeStyles {
-    radius?: number
+    radius?: Value
 }
 
 export interface DecoratedPoint extends Point, PointStyles, DecoratedShape, LineStyles {
@@ -41,7 +48,7 @@ export interface Line {
 }
 
 export interface LineStyles extends ShapeStyles {
-    lineWidth?: number
+    lineWidth?: Value
 }
 
 export interface DecoratedLine extends Line, LineStyles, DecoratedShape {
@@ -50,11 +57,11 @@ export interface DecoratedLine extends Line, LineStyles, DecoratedShape {
 }
 
 export interface Arc {
-    x: number
-    y: number
-    start: number
-    end: number
-    radius: number
+    x: Value
+    y: Value
+    start: Value
+    end: Value
+    radius: Value
 }
 
 export interface ArcStyles extends ShapeStyles {}
@@ -122,9 +129,18 @@ export function generate<T>(count: number, callback: (index: number) => T) {
 
 
 
-export type Num = number | MultiRange<number>
+export type Value = number | MultiRange<number>;
 
-export const convertNumber = (num: Num): number => {
+export const color = (r: Value, g: Value, b: Value, a: Value): Color => {
+    return {
+        r, g, b, a
+    }
+}
+
+
+
+
+export const unwrap = (num: Value): number => {
     if (typeof(num) === "number") return num;
     if (typeof(num[0]) !== "number") {
         const newRange = num as Array<Range<number>>
@@ -133,4 +149,41 @@ export const convertNumber = (num: Num): number => {
     }
     const newRange = num as Range<number>;
     return Math.random() * (newRange[1] - newRange[0]) + newRange[0];
+}
+
+const operate = (operator: string) => (v1: number, v2: number): number => {
+    switch (operator) {
+        case "+":
+            return v1 + v2;
+        case "-":
+            return v1 - v2;
+        case "*":
+            return v1 * v2;
+        case "/":
+            return v1 / v2;
+        default:
+            throw new Error(`Bad operator: ${v1} ${operator} ${v2}`);
+    }
+}
+
+export const simplify = (strings: TemplateStringsArray, ...keys: Value[]) => {
+    let operators = strings.join("").trim().split(" ");
+    if (operators.length !== keys.length - 1) {
+        throw new Error(`Bad expression when simplifying: ${String.raw(strings, keys)}`)
+    }
+    
+    return keys.reduce((accum: number, key, i) => {
+        if (i === 0) return unwrap(key);
+        try {
+            return operate(operators[i-1]) (accum, unwrap(key));
+        }
+        catch (err) {
+            throw new Error(`Error on operation when simplifying: ${String.raw(strings, keys)}`);
+        }
+    }, 0);
+}
+
+export const unwrapColor = (color: Color) => {
+    if (typeof(color) === "string") return color;
+    return `rgba(${unwrap(color.r)}, ${unwrap(color.g)}, ${unwrap(color.b)}, ${unwrap(color.a)})`;
 }

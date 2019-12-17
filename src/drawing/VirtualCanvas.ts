@@ -1,4 +1,4 @@
-import { Point } from "../types";
+import { Point, Value, unwrap } from "../types";
 
 class VirtualCanvas {
     // canvas representation of a cartesian grid with 1024 width, 1024 height, and no
@@ -18,14 +18,14 @@ class VirtualCanvas {
         let maxScale = Math.max(this._scaleX, this._scaleY);
         return {
             ...point,
-            x: (point.x + this.width / 2) * maxScale,
-            y: (this.height / 2 - point.y) * maxScale
+            x: (unwrap(point.x) + this.width / 2) * maxScale,
+            y: (this.height / 2 - unwrap(point.y)) * maxScale
         }
     }
 
-    transformDimensionToCanvas = (value: number): number => {
+    transformDimensionToCanvas = (value: Value): number => {
         let maxScale = Math.max(this._scaleX, this._scaleY);
-        return maxScale * value;
+        return maxScale * unwrap(value);
     }
 }
 
