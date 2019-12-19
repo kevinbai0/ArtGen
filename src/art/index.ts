@@ -12,6 +12,7 @@ import linesGen3 from "../functions/lines3";
 import particlesGen4 from "../functions/particles4";
 import particlesGen5 from "../functions/particles5";
 import linesGen4 from "../functions/lines4";
+import linesGen5 from "../functions/lines5";
 
 
 
@@ -50,3 +51,5 @@ export const particles4 = particlesGen4();
 export const particles5 = particlesGen5();
 
 export const lines4 = linesGen4();
+
+export const lines5 = linesGen5();
