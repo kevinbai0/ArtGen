@@ -5,10 +5,10 @@ export enum ShapeType {
 }
 
 export interface RGBA {
-    r: Value
-    g: Value
-    b: Value
-    a: Value
+    r: number
+    g: number
+    b: number
+    a: number
 }
 
 export type Color = string | RGBA;
@@ -131,9 +131,12 @@ export function generate<T>(count: number, callback: (index: number) => T) {
 
 export type Value = number | MultiRange<number>;
 
-export const color = (r: Value, g: Value, b: Value, a: Value): Color => {
+export const rgba = (r: Value, g: Value, b: Value, a: Value): Color => {
     return {
-        r, g, b, a
+        r: unwrap(r), 
+        g: unwrap(g), 
+        b: unwrap(b), 
+        a: unwrap(a)
     }
 }
 

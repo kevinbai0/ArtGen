@@ -11,6 +11,8 @@ import circlesGen5 from "../functions/circles5";
 import linesGen3 from "../functions/lines3";
 import particlesGen4 from "../functions/particles4";
 import particlesGen5 from "../functions/particles5";
+import linesGen4 from "../functions/lines4";
+
 
 
 export const circles = circleArtGenerator({
@@ -46,3 +48,5 @@ export const lines3 = linesGen3();
 export const particles4 = particlesGen4();
 
 export const particles5 = particlesGen5();
+
+export const lines4 = linesGen4();

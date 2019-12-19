@@ -1,4 +1,4 @@
-import { Lambda, generate, Shape, updateShapes, unwrap, Value, color, unwrapColor, simplify } from "../types";
+import { Lambda, generate, Shape, updateShapes, unwrap, Value, rgba } from "../types";
 
 const particlesGen5 = (): Lambda => {
     const initParticles = generate(600, i => {
@@ -26,7 +26,7 @@ const particlesGen5 = (): Lambda => {
             return Shape.point({
                 x: point.x,
                 y: point.y,
-                fill: {r: 0, g: 0, b: 0, a: [0,0.1] }
+                fill: rgba(0, 0, 0, [0,0.1])
             })
         })
         updateShapes(initParticles, (point, i) => {

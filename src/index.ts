@@ -1,11 +1,11 @@
 import DrawEngine from "./drawing/DrawEngine";
 import State from "./state/State";
 import { addClassName, removeClassName } from "./state/utils";
-import { circles, circles2, lines, lines2, circles3, particles, particles2, particles3, circles4, circles5, lines3, particles4, particles5 } from "./art";
+import { circles, circles2, lines, lines2, circles3, particles, particles2, particles3, circles4, circles5, lines3, particles4, particles5, lines4 } from "./art";
 
 const artgen = <HTMLDivElement> document.getElementById("artgen");
 
-let drawEngine = new DrawEngine(particles5, artgen);
+let drawEngine = new DrawEngine(lines4, artgen);
 
 let lastN: number[] = [];
 

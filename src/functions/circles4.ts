@@ -1,4 +1,4 @@
-import { Lambda, Shape } from "../types";
+import { Lambda, Shape, unwrap } from "../types";
 import AnimatedCircle from "../animations/AnimatedCircle";
 
 
@@ -24,13 +24,13 @@ const circlesGen4 = () => {
             if (!circle.ended) return;
             circles.delete(key);
 
-            const radius = circle.r * (Math.random() * 0.1 + (circle.r > 50 ? 0.8 : 0.65));
-            const dr = circle.r - radius;
+            const radius = unwrap(circle.r) * (Math.random() * 0.1 + (circle.r > 50 ? 0.8 : 0.65));
+            const dr = unwrap(circle.r) - radius;
             circles.set(circlesCount, 
                 new AnimatedCircle(
                     randomArc(
-                        circle.x + Math.random() * dr - dr / 2,
-                        circle.y + Math.random() * dr - dr / 2,
+                        unwrap(circle.x) + Math.random() * dr - dr / 2,
+                        unwrap(circle.y) + Math.random() * dr - dr / 2,
                         radius,
                         circlesCount
                     ),
