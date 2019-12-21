@@ -26,6 +26,10 @@ class AnimatedLine {
         if (this._percentage > 1.05) this._ended = true;
         return this._line;
     }
+
+    line() {
+        return this._line;
+    }
 }
 
 export default AnimatedLine;
