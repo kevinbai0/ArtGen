@@ -4,12 +4,12 @@ import { addClassName, removeClassName } from "./state/utils";
 
 import { circles, circles2, lines, lines2, circles3, particles, 
     particles2, particles3, circles4, circles5, lines3, particles4, particles5, 
-    lines4, lines5, lines6, lines7, particles6, particles7, particles8 } 
+    lines4, lines5, lines6, lines7, particles6, particles7, particles8, christmas } 
 from "./art";
 
 const artgen = <HTMLDivElement> document.getElementById("artgen");
 
-let drawEngine = new DrawEngine(particles8, artgen);
+let drawEngine = new DrawEngine(christmas, artgen);
 
 let lastN: number[] = [];
 

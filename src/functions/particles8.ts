@@ -46,7 +46,6 @@ const particlesGen8 = (): Lambda => {
             }
         });
 
-
         animated = animated.filter((val) => !val.ended).concat(residualParticles);
         if (animated.length > 0) console.log(animated[0].percentage)
         return {

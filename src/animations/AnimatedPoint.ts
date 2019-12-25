@@ -1,40 +1,25 @@
 import { DecoratedArc, Value, unwrap, DecoratedPoint, RGBA } from "../types";
+import Animated from "./Animated";
 
-class AnimatedPoint {
-    private _percentage: number
-    private _ended: boolean = false;
-    private _delay: number;
-
-    private _point: DecoratedPoint;
-    private _startAngle: Value
-
-    get ended() { return this._ended }
-
-    get percentage() { return this._percentage }
-
+class AnimatedPoint extends Animated<DecoratedPoint> {
     constructor(config: DecoratedPoint, delay?: number) {
+        super(config, delay);
         this._delay = delay || 0;
         this._percentage = 0;
-        this._startAngle = Math.random() * 2 * Math.PI;
-        this._point = config;
-        if ((this._point.fill as RGBA).r) {
-            (this._point.fill as RGBA).a = 0;
-            (this._point.stroke as RGBA).a = 0;
+        this._shape = config;
+        if ((this._shape.fill as RGBA).r) {
+            (this._shape.fill as RGBA).a = 0;
+            (this._shape.stroke as RGBA).a = 0;
         }
     }
 
-    update(delta: number) {
-        if (this._delay > 0) {
-            this._delay -= 1;
-            return this._point;
+    willUpdate(newValue: number, value: number) {
+        if ((this._shape.fill as RGBA).r && (this._shape.stroke as RGBA)) {
+            (this._shape.fill as RGBA).a = newValue * 0.001;
+            (this._shape.stroke as RGBA).a = newValue * 0.05;
         }
-        this._percentage += delta;
-        if ((this._point.fill as RGBA).r && (this._point.stroke as RGBA)) {
-            (this._point.fill as RGBA).a = this._percentage * 0.001;
-            (this._point.stroke as RGBA).a = this._percentage * 0.05;
-        }
-        if (this._percentage > 1.05) this._ended = true;
-        return this._point;
+
+        return this._shape;
     }
 }
 

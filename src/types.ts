@@ -190,3 +190,11 @@ export const unwrapColor = (color: Color) => {
     if (typeof(color) === "string") return color;
     return `rgba(${unwrap(color.r)}, ${unwrap(color.g)}, ${unwrap(color.b)}, ${unwrap(color.a)})`;
 }
+
+export const withOpacity = (opacity: Value, color?: Color): Color => {
+    if (!color) return "";
+    if (typeof(color) === "string") return color;
+    const rgb = color as RGBA;
+    return rgba(rgb.r, rgb.g, rgb.b, opacity);
+}
+

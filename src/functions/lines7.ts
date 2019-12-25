@@ -43,7 +43,7 @@ const linesGen7 = (): Lambda => {
         lines.forEach((line, key) => {
             if (line.ended) {
                 lines.delete(key);
-                const finished = line.line();
+                const finished = line.shape;
                 finished.stateIndex = key;
                 ended.push(finished);
                 return;

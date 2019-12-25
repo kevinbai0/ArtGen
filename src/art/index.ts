@@ -18,6 +18,7 @@ import linesGen7 from "../functions/lines7";
 import particlesGen6 from "../functions/particles6";
 import particlesGen7 from "../functions/particles7";
 import particlesGen8 from "../functions/particles8";
+import christmasGen from "../functions/christmas";
 
 export const circles = circleArtGenerator({
     colorRange: {
@@ -66,3 +67,5 @@ export const particles6 = particlesGen6();
 export const particles7 = particlesGen7();
 
 export const particles8 = particlesGen8();
+
+export const christmas = christmasGen();

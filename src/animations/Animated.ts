@@ -1,15 +1,15 @@
 import { DecoratedShape } from "../types";
 
 class Animated<T extends DecoratedShape> {
-    private _percentage: number
-    private _ended: boolean = false;
-    private _delay: number;
+    protected _percentage: number
+    protected _ended: boolean = false;
+    protected _delay: number;
 
-    private _shape: T
+    protected _shape: T
 
     get ended() { return this._ended }
-
     get percentage() { return this._percentage }
+    get shape() { return this._shape };
 
     constructor(config: T, delay?: number) {
         this._delay = delay || 0;
@@ -17,15 +17,18 @@ class Animated<T extends DecoratedShape> {
         this._shape = config;
     }
 
-    onUpdate(newValue: number, oldValue: number) {}
+    willUpdate(newValue: number, value: number) {}
+    didUpdate(value: number, oldValue: number) {}
 
     update(delta: number) {
         if (this._delay > 0) {
             this._delay -= 1;
             return { ...this._shape }
         }
-        //this._line.range = [`${this._percentage * 100 - 1.1}%`, `${(this._percentage + delta) * 100}%`];
+
+        this.willUpdate(this._percentage + delta, this._percentage);
         this._percentage += delta;
+        this.didUpdate(this.percentage, this.percentage - delta);
         if (this._percentage > 1.05) this._ended = true;
         return { ...this._shape };
     }
