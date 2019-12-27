@@ -1,13 +1,6 @@
-import {
-    Lambda,
-    Point,
-    Shape,
-    generate,
-    rgba,
-    unwrap,
-    DecoratedLine
-} from "../types"
+import { Lambda, Point, Shape, DecoratedLine } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
+import { unwrap, rgba, generate } from "../utils"
 
 const linesGen8 = (): Lambda => {
     const eq1 = (theta: number, r: number): Point => {
@@ -58,9 +51,8 @@ const linesGen8 = (): Lambda => {
         if (x % 2 === 0) {
             lines.set(
                 count,
-                generateLine(count, Math.random() < 0.5 ? eq1 : eq1)
+                generateLine(count, unwrap([0, 1]) < 0.5 ? eq1 : eq1)
             )
-            //lines.set(count, generateLine(count + 1, Math.random() < 0.5 ? eq1 : eq2));
             count += 1
         }
 

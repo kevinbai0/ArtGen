@@ -1,4 +1,5 @@
-import { Lambda, generate, Shape, updateShapes, unwrap } from "../types"
+import { Lambda, Shape } from "../types"
+import { unwrap, rgba, generate, updateShapes } from "../utils"
 
 const particlesGen3 = (): Lambda => {
     let points = generate(500, i => {
@@ -35,12 +36,9 @@ const particlesGen3 = (): Lambda => {
     const lambda: Lambda = (x: number) => {
         updateShapes(points, (shape, i) => {
             return {
-                x: unwrap(shape.x) + Math.random() * (x / 100) - x / 200,
-                y: unwrap(shape.y) + 3 * Math.random(),
-                fill: `rgba(${Math.random() * 255},0,0,${Math.max(
-                    0.1,
-                    1 - (x * x) / 3600
-                )})`,
+                x: unwrap(shape.x) + unwrap([-x / 200, x / 200]),
+                y: unwrap(shape.y) + unwrap([0, 3]),
+                fill: rgba([0, 255], 0, 0, Math.max(0.1, 1 - (x * x) / 3600)),
                 zIndex: i
             }
         })

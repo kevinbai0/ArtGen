@@ -1,4 +1,4 @@
-import { DecoratedArc, Value, unwrap, DecoratedPoint, RGBA } from "../types"
+import { DecoratedPoint, RGBA } from "../types"
 import Animated from "./Animated"
 
 class AnimatedPoint extends Animated<DecoratedPoint> {

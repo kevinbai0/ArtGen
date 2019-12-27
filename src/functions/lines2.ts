@@ -1,11 +1,12 @@
 import { Lambda, Shape, Point } from "../types"
+import { unwrap } from "../utils"
 
 const piecewise = () => {
     let arr: Point[] = []
-    const xShift = -100 + Math.random() * 300 - 80
-    const xStretch = 200 + Math.random() * 100 - 50
-    const yShift = 100 + Math.random() * 150 - 75
-    const yStretch = 500 + Math.random() * 100 - 50
+    const xShift = -100 + unwrap([0, 300]) - 80
+    const xStretch = 200 + unwrap([0, 100]) - 50
+    const yShift = 100 + unwrap([0, 150]) - 75
+    const yStretch = 500 + unwrap([0, 100]) - 50
     const yStretchMultiplier = 2
     for (let i = -512; i < 512; i++) {
         if (i < xShift)
@@ -33,8 +34,8 @@ let lineShapes: { points: Point[]; red: number; green: number }[] = []
 for (let i = 0; i < 200; i++) {
     lineShapes.push({
         points: piecewise(),
-        red: Math.random() * 50 + 200,
-        green: Math.random() * 50 + 150
+        red: unwrap([200, 250]),
+        green: unwrap([150, 200])
     })
 }
 const linesGen2 = () => {

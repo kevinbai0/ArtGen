@@ -1,4 +1,5 @@
-import { Point, Value, unwrap } from "../types"
+import { Point, Value } from "../types"
+import { unwrap } from "../utils"
 
 class VirtualCanvas {
     // canvas representation of a cartesian grid with 1024 width, 1024 height, and no

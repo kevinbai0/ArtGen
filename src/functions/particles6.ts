@@ -1,4 +1,5 @@
-import { Lambda, generate, Shape, updateShapes, unwrap, rgba } from "../types"
+import { Lambda, Shape } from "../types"
+import { unwrap, rgba, generate, updateShapes } from "../utils"
 
 const particlesGen6 = (): Lambda => {
     const baseParticles = generate(500, i => {
@@ -22,14 +23,8 @@ const particlesGen6 = (): Lambda => {
         updateShapes(baseParticles, (point, i) => {
             const baseAngle = (i / 500) * 2 * Math.PI
             let theta = baseAngle
-            let dX =
-                Math.random() *
-                (x / 30) *
-                Math.cos(theta + Math.random() * 0.2 - 0.1)
-            let dY =
-                Math.random() *
-                (x / 30) *
-                Math.sin(theta + Math.random() * 0.2 - 0.1)
+            let dX = unwrap([0, x / 30]) * Math.cos(theta + unwrap([-0.1, 0.1]))
+            let dY = unwrap([0, x / 30]) * Math.sin(theta + unwrap([-0.1, 0.1]))
             return {
                 x: Math.sin(theta) * x,
                 y: Math.cos(theta) * x,

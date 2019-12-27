@@ -1,9 +1,10 @@
-import { Lambda, Shape, unwrap } from "../types"
+import { Lambda, Shape } from "../types"
 import AnimatedCircle from "../animations/AnimatedCircle"
+import { unwrap } from "../utils"
 
 const circlesGen4 = () => {
     const randomArc = (x: number, y: number, radius: number, key?: number) => {
-        const color = `rgba(${Math.random() * 150 + 50}, 0, 0, 1)`
+        const color = `rgba(${unwrap([50, 200])}, 0, 0, 1)`
         return Shape.arc({
             x,
             y,
@@ -26,55 +27,21 @@ const circlesGen4 = () => {
 
             const radius =
                 unwrap(circle.r) *
-                (Math.random() * 0.1 + (circle.r > 50 ? 0.8 : 0.65))
+                (unwrap([0, 0.1]) + (circle.r > 50 ? 0.8 : 0.65))
             const dr = unwrap(circle.r) - radius
             circles.set(
                 circlesCount,
                 new AnimatedCircle(
                     randomArc(
-                        unwrap(circle.x) + Math.random() * dr - dr / 2,
-                        unwrap(circle.y) + Math.random() * dr - dr / 2,
+                        unwrap(circle.x) + unwrap([-dr / 2, dr / 2]),
+                        unwrap(circle.y) + unwrap([-dr / 2, dr / 2]),
                         radius,
                         circlesCount
                     ),
-                    Math.random() * 20
+                    unwrap([0, 20])
                 )
             )
             circlesCount += 1
-
-            /*for (let i = 0; i < 6; ++i) {
-                let radius = circle.r / (Math.random() * 1.5 + 2.9)
-                let th = i / 6 * Math.PI * 2;
-
-                circles.set(circlesCount, 
-                    new AnimatingCircle(
-                        Shape.arc(
-                            randomArc(
-                                circle.x + Math.cos(th) * (circle.r - radius),
-                                circle.y + Math.sin(th) * (circle.r - radius),
-                                radius,
-                                circlesCount
-                            )
-                        ), 
-                        Math.random() * 20
-                    )
-                );
-                circlesCount += 1;
-            }
-            circles.set(circlesCount, 
-                new AnimatingCircle(
-                    Shape.arc(
-                        randomArc(
-                            circle.x,
-                            circle.y,
-                            circle.r / (Math.random() * 1.5 + 2.9),
-                            circlesCount
-                        )
-                    ), 
-                    Math.random() * 20
-                )
-            );
-            circlesCount += 1;*/
         })
 
         return {

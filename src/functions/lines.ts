@@ -1,4 +1,5 @@
 import { Lambda, Shape } from "../types"
+import { unwrap } from "../utils"
 
 const linesGen = () => {
     const lambda: Lambda = (x: number) => {
@@ -11,7 +12,7 @@ const linesGen = () => {
                     },
                     {
                         x,
-                        y: Math.random() * 1024 - 512
+                        y: unwrap([-512, 512])
                     }
                 ],
                 stroke: `rgba(${255 - x / 6}, 80, ${x / 6}, ${x / 1000})`
@@ -24,7 +25,7 @@ const linesGen = () => {
                     },
                     {
                         x: -x,
-                        y: Math.random() * 1024 - 512
+                        y: unwrap([-512, 512])
                     }
                 ],
                 stroke: `rgba(${255 - x / 6}, 80, ${x / 6}, ${x / 1000})`,

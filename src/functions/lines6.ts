@@ -1,14 +1,6 @@
-import {
-    Lambda,
-    Point,
-    Shape,
-    generate,
-    rgba,
-    unwrap,
-    DecoratedLine,
-    updateShapes
-} from "../types"
+import { Lambda, Point, Shape, DecoratedLine } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
+import { unwrap, rgba, generate } from "../utils"
 
 const linesGen6 = (): Lambda => {
     const func = (theta: number, r: number): Point => {
@@ -28,7 +20,7 @@ const linesGen6 = (): Lambda => {
         let r = options[rand]
         options = options.filter((option, i) => i !== rand)
         const max = Math.max(50, r * 2)
-        const start = Math.floor(Math.random() * max)
+        const start = Math.floor(unwrap([0, max]))
         const points = generate(max, i =>
             func(((start + i) / (max - 1)) * 2 * Math.PI, r)
         )

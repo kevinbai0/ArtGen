@@ -1,5 +1,6 @@
-import { Lambda, Point, Shape, generate, rgba, unwrap } from "../types"
+import { Lambda, Point, Shape } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
+import { unwrap, rgba, generate } from "../utils"
 
 const linesGen5 = (): Lambda => {
     const func = (theta: number, r: number): Point => {

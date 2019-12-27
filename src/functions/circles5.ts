@@ -1,8 +1,6 @@
-import { Lambda, Shape, Value, unwrap } from "../types"
+import { Lambda, Shape, Value } from "../types"
 import AnimatedCircle from "../animations/AnimatedCircle"
-
-const rand = (r1: number, r2: number) =>
-    Math.random() * Math.abs(r1 - r2) + Math.min(r1, r2)
+import { unwrap } from "../utils"
 
 const circlesGen5 = () => {
     const randomArc = (config: {
@@ -28,19 +26,23 @@ const circlesGen5 = () => {
     const maxEdge = 400
     let circles = new Map<number, AnimatedCircle>()
     // top left
+    const calc = (key: number) => ({
+        radius: unwrap([minRadius, maxRadius]),
+        fill: `rgba(${unwrap([150, 200])}, 
+                ${unwrap([50, 100])}, 
+                ${unwrap([50, 200])}, ${0.5})`,
+        key
+    })
+
     circles.set(
         0,
         new AnimatedCircle(
             randomArc({
                 x: [-maxEdge + 100, -maxEdge],
                 y: [maxEdge - 100, maxEdge],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 0
+                ...calc(0)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     // middle
@@ -50,13 +52,9 @@ const circlesGen5 = () => {
             randomArc({
                 x: [-50, -50],
                 y: [1, 0],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 0
+                ...calc(0)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     // bottom left
@@ -66,13 +64,9 @@ const circlesGen5 = () => {
             randomArc({
                 x: [-maxEdge + 100, -maxEdge],
                 y: [-maxEdge, -maxEdge + 50],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 2
+                ...calc(2)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     // bottom right
@@ -82,13 +76,9 @@ const circlesGen5 = () => {
             randomArc({
                 x: [maxEdge - 50, maxEdge],
                 y: [-maxEdge, -maxEdge + 50],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 3
+                ...calc(3)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     // top right
@@ -98,13 +88,9 @@ const circlesGen5 = () => {
             randomArc({
                 x: [maxEdge - 100, maxEdge],
                 y: [maxEdge - 100, maxEdge],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 4
+                ...calc(4)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     //middle top
@@ -114,13 +100,9 @@ const circlesGen5 = () => {
             randomArc({
                 x: [-50, 50],
                 y: [maxEdge - 100, maxEdge],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 4
+                ...calc(4)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     circles.set(
@@ -129,13 +111,9 @@ const circlesGen5 = () => {
             randomArc({
                 x: [-50, 50],
                 y: [-maxEdge + 100, -maxEdge],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 4
+                ...calc(4)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     circles.set(
@@ -144,13 +122,9 @@ const circlesGen5 = () => {
             randomArc({
                 x: [-maxEdge, -maxEdge + 50],
                 y: [-50, -50],
-                radius: [minRadius, maxRadius],
-                fill: `rgba(${unwrap([150, 200])}, 
-                        ${unwrap([50, 100])}, 
-                        ${unwrap([50, 200])}, ${0.5})`,
-                key: 4
+                ...calc(4)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
     circles.set(
@@ -163,9 +137,9 @@ const circlesGen5 = () => {
                 fill: `rgba(${unwrap([150, 200])}, 
                         ${unwrap([50, 100])}, 
                         ${unwrap([50, 200])}, ${0.5})`,
-                key: 4
+                ...calc(4)
             }),
-            Math.random() * 20
+            unwrap([0, 20])
         )
     )
 
@@ -178,7 +152,7 @@ const circlesGen5 = () => {
 
             const radius =
                 unwrap(circle.r) *
-                (Math.random() * 0.1 + (circle.r > 50 ? 0.8 : 0.65))
+                (unwrap([0, 0.1]) + (circle.r > 50 ? 0.8 : 0.65))
             const dr = unwrap(circle.r) - radius
             circles.set(
                 circlesCount,
@@ -199,7 +173,7 @@ const circlesGen5 = () => {
                         ])}, ${unwrap([50, 200])}, ${0.5})`,
                         key: circlesCount
                     }),
-                    Math.random() * 10
+                    unwrap([0, 10])
                 )
             )
             circlesCount += 1

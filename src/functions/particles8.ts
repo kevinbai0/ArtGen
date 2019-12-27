@@ -1,14 +1,6 @@
-import {
-    Lambda,
-    generate,
-    Shape,
-    updateShapes,
-    unwrap,
-    rgba,
-    DecoratedPoint,
-    RGBA
-} from "../types"
+import { Lambda, Shape, RGBA } from "../types"
 import AnimatedPoint from "../animations/AnimatedPoint"
+import { unwrap, rgba, generate, updateShapes } from "../utils"
 
 const particlesGen8 = (): Lambda => {
     const baseParticles = generate(20, i => {

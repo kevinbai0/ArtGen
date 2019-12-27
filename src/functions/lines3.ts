@@ -1,5 +1,6 @@
-import { Lambda, Shape, generate, Point, updateShapes } from "../types"
+import { Lambda, Shape, Point } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
+import { unwrap, generate } from "../utils"
 
 const linesGen3 = (): Lambda => {
     const generateLine = (index: number, n: number, inverted: boolean) => {
@@ -16,7 +17,7 @@ const linesGen3 = (): Lambda => {
         let line = Shape.line({
             points,
             stroke: "rgba(0,0,0,0.01)",
-            lineWidth: Math.random() * 20 + 5
+            lineWidth: unwrap([5, 25])
         })
         return line
     }
@@ -24,9 +25,7 @@ const linesGen3 = (): Lambda => {
     let animatedLines = new Map<number, AnimatedLine>()
     animatedLines.set(
         0,
-        new AnimatedLine(
-            generateLine(0, Math.random() * 10, Math.random() < 0.5)
-        )
+        new AnimatedLine(generateLine(0, unwrap([0, 10]), unwrap([0, 1]) < 0.5))
     )
 
     let count = 1
@@ -39,11 +38,7 @@ const linesGen3 = (): Lambda => {
         })
         if (x < 500) {
             let anim = new AnimatedLine(
-                generateLine(
-                    count,
-                    Math.random() * 1 + 0.2,
-                    Math.random() < 0.5
-                )
+                generateLine(count, unwrap([0.2, 1.2]), unwrap([0, 1]) < 0.5)
             )
             animatedLines.set(count, anim)
             count += 1

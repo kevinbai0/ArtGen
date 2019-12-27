@@ -1,5 +1,5 @@
 import { Lambda, MultiRange, Shape } from "../types"
-import { randomized } from "../utils"
+import { unwrap } from "../utils"
 
 type MultiNumberRange = MultiRange<number>
 
@@ -26,15 +26,15 @@ const circleArtGenerator = (config?: CirclesConfig) => {
         a: MultiNumberRange = rangeA
     ) => {
         return `
-            rgba(${randomized(r)}, ${randomized(g)},
-                ${randomized(b)}, ${randomized(a)})
+            rgba(${unwrap(r)}, ${unwrap(g)},
+                ${unwrap(b)}, ${unwrap(a)})
         `
     }
 
     const radiusRandomizer = (
         r: MultiNumberRange = (config && config.radius) || [5, 5]
     ) => {
-        return randomized(r)
+        return unwrap(r)
     }
     const circles: Lambda = (x: number) => {
         let r = x
@@ -42,8 +42,9 @@ const circleArtGenerator = (config?: CirclesConfig) => {
         let max = 4 * r
         if (max < 5) max = 5
         for (let i = 0; i < max; ++i) {
-            let y = Math.random() * 2 * r - r
-            let newX = (Math.random() > 0.5 ? -1 : 1) * Math.sqrt(r * r - y * y)
+            let y = unwrap([-r, r])
+            let newX =
+                (unwrap([0, 1]) > 0.5 ? -1 : 1) * Math.sqrt(r * r - y * y)
 
             points.push(
                 Shape.point({

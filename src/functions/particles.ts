@@ -1,12 +1,5 @@
-import {
-    Lambda,
-    DecoratedPoint,
-    Shape,
-    Point,
-    updateShapes,
-    generate,
-    unwrap
-} from "../types"
+import { Lambda, DecoratedPoint, Shape } from "../types"
+import { unwrap, generate, updateShapes } from "../utils"
 
 const particlesGen = (): Lambda => {
     const len = 800
@@ -61,16 +54,16 @@ const particlesGen = (): Lambda => {
 
     const lambda: Lambda = (x: number) => {
         updateShapes(particles, (point, i) => ({
-            x: unwrap(point.x) + (Math.random() * 2 - 1) * Math.max(3, x / 100),
-            y: unwrap(point.y) + (Math.random() * 2 - 1) * Math.max(3, x / 100),
+            x: unwrap(point.x) + unwrap([-1, 1]) * Math.max(3, x / 100),
+            y: unwrap(point.y) + unwrap([-1, 1]) * Math.max(3, x / 100),
             fill: `rgba(120,120,120,${Math.min(
                 1,
                 0.2 / (Math.pow(x, 1 / 3) + 1)
             )})`
         }))
         updateShapes(particles2, (point, i) => ({
-            x: unwrap(point.x) + (Math.random() * 2 - 1) * Math.max(4, x / 200),
-            y: unwrap(point.y) + (Math.random() * 2 - 1) * Math.max(4, x / 200),
+            x: unwrap(point.x) + unwrap([-1, 1]) * Math.max(4, x / 200),
+            y: unwrap(point.y) + unwrap([-1, 1]) * Math.max(4, x / 200),
             fill: `rgba(120,120,120,${Math.min(
                 1,
                 0.2 / (Math.pow(x, 1 / 3) + 1)

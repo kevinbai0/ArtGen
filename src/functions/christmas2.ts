@@ -1,15 +1,5 @@
-import {
-    Lambda,
-    generate,
-    Shape,
-    updateShapes,
-    unwrap,
-    rgba,
-    DecoratedPoint,
-    RGBA,
-    simplify,
-    withOpacity
-} from "../types"
+import { Lambda, Shape } from "../types"
+import { unwrap, rgba, withOpacity, generate, updateShapes } from "../utils"
 
 const christmasGen2 = (): Lambda => {
     const baseParticles = generate(1000, i => {
@@ -31,7 +21,7 @@ const christmasGen2 = (): Lambda => {
     const initPositions = baseParticles.map(shape => ({
         x: shape.x,
         y: shape.y,
-        direction: Math.random() < 0.5
+        direction: unwrap([0, 1]) < 0.5
     }))
 
     const lambda: Lambda = (x: number) => {

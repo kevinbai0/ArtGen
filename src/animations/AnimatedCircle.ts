@@ -1,4 +1,5 @@
-import { DecoratedArc, Value, unwrap } from "../types"
+import { DecoratedArc, Value } from "../types"
+import { unwrap } from "../utils"
 
 class AnimatedCircle {
     private _x: Value
@@ -31,7 +32,7 @@ class AnimatedCircle {
         this._y = config.y
         this._r = config.radius
         this._percentage = 0
-        this._startAngle = Math.random() * 2 * Math.PI
+        this._startAngle = unwrap([0, 2 * Math.PI])
         this._arc = config
         this._arc.start = this._startAngle
         this._arc.end = this._startAngle

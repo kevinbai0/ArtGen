@@ -1,12 +1,5 @@
-import {
-    Lambda,
-    generate,
-    Shape,
-    updateShapes,
-    unwrap,
-    Value,
-    rgba
-} from "../types"
+import { Lambda, Shape, Value } from "../types"
+import { rgba, unwrap, generate, updateShapes } from "../utils"
 
 const particlesGen5 = (): Lambda => {
     const initParticles = generate(600, i => {
