@@ -2,11 +2,13 @@
   "name": "artgenjs",
   "version": "1.0.7",
   "description": "A lightweight dependency-free Javascript library to create generative art.",
-  "main": "dist/app.bundle.js",
-  "files": ["dist"],
+  "main": "dist/artgen.bundle.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --mode development --config webpack.dev.js",
+    "lint": "eslint src/**/*",
     "build": "webpack --config webpack.prod.js",
     "prepare": "npm run build"
   },
@@ -27,7 +29,14 @@
     "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-typescript": "^7.7.2",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
     "babel-loader": "^8.0.6",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.8.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "1.19.1",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",

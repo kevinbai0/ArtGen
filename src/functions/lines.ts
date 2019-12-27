@@ -1,4 +1,4 @@
-import { Lambda, Shape } from "../types";
+import { Lambda, Shape } from "../types"
 
 const linesGen = () => {
     const lambda: Lambda = (x: number) => {
@@ -14,7 +14,7 @@ const linesGen = () => {
                         y: Math.random() * 1024 - 512
                     }
                 ],
-                stroke: `rgba(${255 - x / 6}, 80, ${x / 6}, ${x / 1000})`,
+                stroke: `rgba(${255 - x / 6}, 80, ${x / 6}, ${x / 1000})`
             }),
             Shape.line({
                 points: [
@@ -28,7 +28,7 @@ const linesGen = () => {
                     }
                 ],
                 stroke: `rgba(${255 - x / 6}, 80, ${x / 6}, ${x / 1000})`,
-                zIndex: 1 
+                zIndex: 1
             })
         ]
         return {
@@ -36,7 +36,7 @@ const linesGen = () => {
             dx: 1
         }
     }
-    return lambda;
+    return lambda
 }
 
-export default linesGen;
+export default linesGen

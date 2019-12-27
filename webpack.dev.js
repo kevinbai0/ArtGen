@@ -7,7 +7,7 @@ module.exports = merge(common, {
     mode: "development",
     devServer: {
         contentBase: path.join(__dirname, 'example'),
-        filename: "app.bundle.js",
+        filename: "artgen.bundle.js",
         compress: true,
         port: 9000
     }

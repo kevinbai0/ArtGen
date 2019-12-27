@@ -10,3 +10,10 @@ export const randomized = (range: MultiRange<number>) => {
     return Math.random() * (newRange[1] - newRange[0]) + newRange[0];
 }
 
+export function addClassName(currentClassName: string, className: string) {
+    return [...currentClassName.trim().split(" ").filter(str => str !== className), className].join(" ");
+}
+
+export function removeClassName(currentClassName: string, className: string) {
+    return currentClassName.trim().split(" ").filter(str => str !== className).join(" ");
+}

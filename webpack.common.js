@@ -8,13 +8,19 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'app.bundle.js',
+        filename: 'artgen.bundle.js',
         library: "ArtGen",
         libraryTarget: 'umd',
         globalObject: 'this',
     },
     module: {
         rules: [
+			{
+                enforce: 'pre',
+                test: /\.m?(ts|js)$/,
+                exclude: /node_modules/,
+                loader: 'eslint-loader',
+            },
             {
                 test: /\.m?(ts|js)$/,
                 exclude: /(node_modules|bower_components)/,

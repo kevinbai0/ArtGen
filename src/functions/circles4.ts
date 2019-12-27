@@ -1,32 +1,35 @@
-import { Lambda, Shape, unwrap } from "../types";
-import AnimatedCircle from "../animations/AnimatedCircle";
-
-
+import { Lambda, Shape, unwrap } from "../types"
+import AnimatedCircle from "../animations/AnimatedCircle"
 
 const circlesGen4 = () => {
     const randomArc = (x: number, y: number, radius: number, key?: number) => {
-        const color = `rgba(${Math.random() * 150 + 50}, 0, 0, 1)`;
+        const color = `rgba(${Math.random() * 150 + 50}, 0, 0, 1)`
         return Shape.arc({
-            x, y, radius,
+            x,
+            y,
+            radius,
             start: 0,
             end: 0,
             fill: color,
             zIndex: key
-        });
+        })
     }
 
-    let circlesCount = 1;
+    let circlesCount = 1
     let circles = new Map<number, AnimatedCircle>()
-    circles.set(0, new AnimatedCircle(randomArc(0,0,800)));
+    circles.set(0, new AnimatedCircle(randomArc(0, 0, 800)))
 
     const lambda: Lambda = (x: number) => {
         circles.forEach((circle, key) => {
-            if (!circle.ended) return;
-            circles.delete(key);
+            if (!circle.ended) return
+            circles.delete(key)
 
-            const radius = unwrap(circle.r) * (Math.random() * 0.1 + (circle.r > 50 ? 0.8 : 0.65));
-            const dr = unwrap(circle.r) - radius;
-            circles.set(circlesCount, 
+            const radius =
+                unwrap(circle.r) *
+                (Math.random() * 0.1 + (circle.r > 50 ? 0.8 : 0.65))
+            const dr = unwrap(circle.r) - radius
+            circles.set(
+                circlesCount,
                 new AnimatedCircle(
                     randomArc(
                         unwrap(circle.x) + Math.random() * dr - dr / 2,
@@ -36,9 +39,9 @@ const circlesGen4 = () => {
                     ),
                     Math.random() * 20
                 )
-            );
-            circlesCount += 1;
-            
+            )
+            circlesCount += 1
+
             /*for (let i = 0; i < 6; ++i) {
                 let radius = circle.r / (Math.random() * 1.5 + 2.9)
                 let th = i / 6 * Math.PI * 2;
@@ -72,15 +75,17 @@ const circlesGen4 = () => {
                 )
             );
             circlesCount += 1;*/
-        });
+        })
 
         return {
-            shapes: Array.from(circles.entries()).map(circle => circle[1].line(0.05)),
+            shapes: Array.from(circles.entries()).map(circle =>
+                circle[1].line(0.05)
+            ),
             dx: 1
         }
     }
 
-    return lambda;
+    return lambda
 }
 
-export default circlesGen4;
+export default circlesGen4
