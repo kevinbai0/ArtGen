@@ -1,6 +1,6 @@
 const artgen = document.getElementById("artgen");
 
-let drawEngine = new ArtGen.DrawEngine(ArtGen.art.christmas2, artgen);
+let drawEngine = new ArtGen.DrawEngine(ArtGen.art.lines8, artgen);
 
 let lastN = [];
 
