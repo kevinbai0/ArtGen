@@ -10,7 +10,6 @@ module.exports = {
         filename: 'app.bundle.js',
         library: "ArtGen"
     },
-    mode: "development",
     module: {
         rules: [
             {
@@ -24,11 +23,5 @@ module.exports = {
                 }
             }
         ]
-    },
-    devServer: {
-        contentBase: path.join(__dirname, 'example'),
-        filename: "app.bundle.js",
-        compress: true,
-        port: 9000
     }
 }

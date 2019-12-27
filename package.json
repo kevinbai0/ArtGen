@@ -1,23 +1,23 @@
 {
-  "name": "artgen.js",
+  "name": "artgenjs",
   "version": "1.0.0",
   "description": "A lightweight dependency-free Javascript library to create generative art.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --mode development",
-    "bundle": "webpack"
+    "dev": "webpack-dev-server --mode development --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "homepage": "https://github.com/kevinbai0/artgen#readme",
   "keywords": [],
   "author": {
     "name": "Kevin Bai",
-    "email":  "kevin.c.bai0@gmail.com",
+    "email": "kevin.c.bai0@gmail.com",
     "url": "https://www.kevinbai.design"
   },
-  "bugs": { 
-    "url" : "https://github.com/kevinbai0/artgen/issues",
-    "email" : "kevin.c.bai0@gmail.com"
+  "bugs": {
+    "url": "https://github.com/kevinbai0/artgen/issues",
+    "email": "kevin.c.bai0@gmail.com"
   },
   "license": "ISC",
   "devDependencies": {
@@ -29,7 +29,8 @@
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {}
 }
