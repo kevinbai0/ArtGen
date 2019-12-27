@@ -1,7 +1,7 @@
 {
-  "name": "art-project",
+  "name": "artgen",
   "version": "1.0.0",
-  "description": "",
+  "description": "A lightweight dependency-free Javascript library to create generative art.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
