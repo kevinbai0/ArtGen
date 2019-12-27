@@ -1,12 +1,14 @@
 {
   "name": "artgenjs",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "A lightweight dependency-free Javascript library to create generative art.",
-  "main": "index.js",
+  "main": "dist/app.bundle.js",
+  "files": ["dist"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --mode development --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "prepare": "npm run build"
   },
   "homepage": "https://github.com/kevinbai0/artgen#readme",
   "keywords": [],
