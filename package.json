@@ -8,8 +8,17 @@
     "dev": "webpack-dev-server --mode development",
     "bundle": "webpack"
   },
+  "homepage": "https://github.com/kevinbai0/artgen#readme",
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Kevin Bai",
+    "email":  "kevin.c.bai0@gmail.com",
+    "url": "https://www.kevinbai.design"
+  },
+  "bugs": { 
+    "url" : "https://github.com/kevinbai0/artgen/issues",
+    "email" : "kevin.c.bai0@gmail.com"
+  },
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.7.2",
