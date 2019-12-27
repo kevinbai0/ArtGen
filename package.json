@@ -1,5 +1,5 @@
 {
-  "name": "artgen",
+  "name": "artgen.js",
   "version": "1.0.0",
   "description": "A lightweight dependency-free Javascript library to create generative art.",
   "main": "index.js",
