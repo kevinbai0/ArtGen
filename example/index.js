@@ -1,6 +1,8 @@
 const artgen = document.getElementById("artgen");
 
-let drawEngine = new ArtGen.DrawEngine(ArtGen.art.lines8, artgen);
+const { DrawEngine, art, utils } = ArtGen;
+
+let drawEngine = new DrawEngine(art.lines8, artgen);
 
 let lastN = [];
 
@@ -19,19 +21,14 @@ drawEngine.dataListener = (fps, duration) => {
 
 // Button
 const button = document.getElementById("start-button");
-
-const buttonState = new ArtGen.State(false);
-buttonState.bind("listener", newValue => {
-    if (newValue) {
-        drawEngine.start({
-            duration: 10000,
-        });
-        button.className = ArtGen.utils.addClassName(button.className, "hidden");
-    }
-});
-
-button.onclick = _ => buttonState.update(!buttonState.value);
+button.onclick = () => start()
 
 button.className="hidden";
+setTimeout(() => start(), 1000);
 
-setTimeout(() => buttonState.update(true), 1000);
+function start() {
+    drawEngine.start({
+        duration: 10000,
+    });
+    button.className = utils.addClassName(button.className, "hidden");
+}

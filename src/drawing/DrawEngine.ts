@@ -71,6 +71,9 @@ class DrawEngine {
         backgroundArtboard.width = container.clientWidth * 2;
         backgroundArtboard.height = container.clientHeight * 2;
 
+        this._style(artboard);
+        this._style(backgroundArtboard);
+
         container.appendChild(backgroundArtboard);
         container.appendChild(artboard);
 
@@ -83,6 +86,14 @@ class DrawEngine {
 
         this._startTime = 0;
         this._timeTracker = new TimeTracker();
+    }
+
+    private _style(artboard: HTMLElement) {
+        artboard.style.position="absolute"
+        artboard.style.left="0";
+        artboard.style.top="0";
+        artboard.style.width="inherit";
+        artboard.style.height="inherit"
     }
 
     /**

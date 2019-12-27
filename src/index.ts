@@ -1,5 +1,4 @@
 import DrawEngine from "./drawing/DrawEngine";
-import State from "./state/State";
 import Animated from "./animations/Animated";
 import AnimatedPoint from "./animations/AnimatedPoint";
 import AnimatedLine from "./animations/AnimatedLine";
@@ -10,7 +9,6 @@ import * as utils from "./state/utils";
 export {
     art,
     DrawEngine,
-    State,
     utils,
     Animated,
     AnimatedLine,
