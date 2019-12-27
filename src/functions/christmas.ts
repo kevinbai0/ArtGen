@@ -1,5 +1,5 @@
-import { Lambda, generate, Shape, updateShapes } from "../types"
-import { unwrap, withOpacity, rgba } from "../utils"
+import { Lambda, Shape } from "../types"
+import { unwrap, withOpacity, rgba, generate, updateShapes } from "../utils"
 
 const christmasGen = (): Lambda => {
     const baseParticles = generate(500, i => {

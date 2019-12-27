@@ -5,12 +5,11 @@ import {
     DecoratedLine,
     Range,
     DecoratedArc,
-    Value,
-    unwrap,
-    unwrapColor
+    Value
 } from "../types"
 
 import VirtualCanvas from "./VirtualCanvas"
+import { unwrap, unwrapColor } from "../utils"
 
 export interface StartConfiguration {
     duration?: number
