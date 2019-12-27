@@ -2,6 +2,7 @@
   "name": "artgenjs",
   "version": "1.0.7",
   "description": "A lightweight dependency-free Javascript library to create generative art.",
+  "repository": "https://www.github.com/kevinbai0/ArtGen.git",
   "main": "dist/artgen.bundle.js",
   "files": [
     "dist"
