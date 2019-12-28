@@ -18,7 +18,10 @@ const circlesGen4 = (unwrap = productionUnwrap): DrawableFunction => {
 
     let circlesCount = 1
     let circles = new Map<number, AnimatedCircle>()
-    circles.set(0, new AnimatedCircle(randomArc(0, 0, 800)))
+    circles.set(
+        0,
+        new AnimatedCircle(randomArc(0, 0, 800), unwrap([0, 2 * Math.PI]))
+    )
 
     const lambda: Lambda = (x: number) => {
         circles.forEach((circle, key) => {
@@ -38,6 +41,7 @@ const circlesGen4 = (unwrap = productionUnwrap): DrawableFunction => {
                         radius,
                         circlesCount
                     ),
+                    unwrap([0, 2 * Math.PI]),
                     unwrap([0, 20])
                 )
             )

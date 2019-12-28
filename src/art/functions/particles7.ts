@@ -1,12 +1,15 @@
 import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../../types"
 import {
     unwrap as productionWrap,
-    rgba,
+    rgba as productionRGBA,
     generate,
     updateShapes
 } from "../../utils"
 
-const particlesGen7 = (unwrap = productionWrap): DrawableFunction => {
+const particlesGen7 = (
+    unwrap = productionWrap,
+    rgba = productionRGBA
+): DrawableFunction => {
     const baseParticles = generate(100, i => {
         let th = (unwrap([0, 500]) / 500) * 2 * Math.PI
         return Shape.point({

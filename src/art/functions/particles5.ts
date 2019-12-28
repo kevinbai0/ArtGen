@@ -1,12 +1,15 @@
 import { Lambda, Shape, Value, DrawableFunction } from "../../types"
 import {
-    rgba,
+    rgba as productionRGBA,
     unwrap as productionWrap,
     generate,
     updateShapes
 } from "../../utils"
 
-const particlesGen5 = (unwrap = productionWrap): DrawableFunction => {
+const particlesGen5 = (
+    unwrap = productionWrap,
+    rgba = productionRGBA
+): DrawableFunction => {
     const initParticles = generate(600, i => {
         return Shape.point({
             x: [-512, 512],

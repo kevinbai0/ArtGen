@@ -42,6 +42,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [maxEdge - 100, maxEdge],
                 ...calc(0)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -54,6 +55,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [1, 0],
                 ...calc(0)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -66,6 +68,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [-maxEdge, -maxEdge + 50],
                 ...calc(2)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -78,6 +81,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [-maxEdge, -maxEdge + 50],
                 ...calc(3)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -90,6 +94,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [maxEdge - 100, maxEdge],
                 ...calc(4)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -102,6 +107,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [maxEdge - 100, maxEdge],
                 ...calc(4)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -113,6 +119,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [-maxEdge + 100, -maxEdge],
                 ...calc(4)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -124,6 +131,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                 y: [-50, -50],
                 ...calc(4)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -139,6 +147,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                         ${unwrap([50, 200])}, ${0.5})`,
                 ...calc(4)
             }),
+            unwrap([0, 2 * Math.PI]),
             unwrap([0, 20])
         )
     )
@@ -173,6 +182,7 @@ const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
                         ])}, ${unwrap([50, 200])}, ${0.5})`,
                         key: circlesCount
                     }),
+                    unwrap([0, 2 * Math.PI]),
                     unwrap([0, 10])
                 )
             )

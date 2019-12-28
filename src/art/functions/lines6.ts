@@ -6,9 +6,16 @@ import {
     DrawableFunction
 } from "../../types"
 import AnimatedLine from "../../animations/AnimatedLine"
-import { unwrap as productionUnwrap, rgba, generate } from "../../utils"
+import {
+    unwrap as productionUnwrap,
+    rgba as productionRGBA,
+    generate
+} from "../../utils"
 
-const linesGen6 = (unwrap = productionUnwrap): DrawableFunction => {
+const linesGen6 = (
+    unwrap = productionUnwrap,
+    rgba = productionRGBA
+): DrawableFunction => {
     const func = (theta: number, r: number): Point => {
         return {
             x: r * Math.cos(theta),

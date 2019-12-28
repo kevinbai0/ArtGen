@@ -2,12 +2,15 @@ import { Lambda, Shape, RGBA, DrawableFunction } from "../../types"
 import AnimatedPoint from "../../animations/AnimatedPoint"
 import {
     unwrap as productionWrap,
-    rgba,
+    rgba as productionRGBA,
     generate,
     updateShapes
 } from "../../utils"
 
-const particlesGen8 = (unwrap = productionWrap): DrawableFunction => {
+const particlesGen8 = (
+    unwrap = productionWrap,
+    rgba = productionRGBA
+): DrawableFunction => {
     const baseParticles = generate(20, i => {
         let th = (unwrap([0, 20]) / 20) * 2 * Math.PI
         return Shape.point({
@@ -60,7 +63,6 @@ const particlesGen8 = (unwrap = productionWrap): DrawableFunction => {
         })
 
         animated = animated.filter(val => !val.ended).concat(residualParticles)
-        if (animated.length > 0) console.log(animated[0].percentage)
         return animated.map(point => point.update(0.05))
     }
 

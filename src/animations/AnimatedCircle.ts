@@ -1,5 +1,4 @@
 import { DecoratedArc, Value } from "../types"
-import { unwrap } from "../utils"
 
 class AnimatedCircle {
     private _x: Value
@@ -10,7 +9,7 @@ class AnimatedCircle {
     private _delay: number
 
     private _arc: DecoratedArc
-    private _startAngle: Value
+    private _startAngle: number
 
     get x() {
         return this._x
@@ -26,13 +25,13 @@ class AnimatedCircle {
         return this._ended
     }
 
-    constructor(config: DecoratedArc, delay?: number) {
+    constructor(config: DecoratedArc, startAngle: number, delay?: number) {
         this._delay = delay || 0
         this._x = config.x
         this._y = config.y
         this._r = config.radius
         this._percentage = 0
-        this._startAngle = unwrap([0, 2 * Math.PI])
+        this._startAngle = startAngle
         this._arc = config
         this._arc.start = this._startAngle
         this._arc.end = this._startAngle
@@ -44,8 +43,7 @@ class AnimatedCircle {
             return this._arc
         }
         this._percentage += delta
-        this._arc.end =
-            unwrap(this._startAngle) + this._percentage * Math.PI * 2
+        this._arc.end = this._startAngle + this._percentage * Math.PI * 2
         if (this._percentage > 1.05) this._ended = true
         return this._arc
     }

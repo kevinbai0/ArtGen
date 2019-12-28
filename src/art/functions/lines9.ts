@@ -1,7 +1,10 @@
 import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../../types"
-import { unwrap as productionUnwrap, rgba } from "../../utils"
+import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
 
-const linesGen9 = (unwrap = productionUnwrap): DrawableFunction => {
+const linesGen9 = (
+    unwrap = productionUnwrap,
+    rgba = productionRGBA
+): DrawableFunction => {
     /**
      * Set up, initialize
      */
