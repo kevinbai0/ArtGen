@@ -1,44 +1,44 @@
-import { Lambda, Shape, Point } from "../types"
-import { unwrap } from "../utils"
+import { Lambda, Shape, Point, DrawableFunction } from "../types"
+import { unwrap as productionUnwrap } from "../utils"
 
-const piecewise = () => {
-    let arr: Point[] = []
-    const xShift = -100 + unwrap([0, 300]) - 80
-    const xStretch = 200 + unwrap([0, 100]) - 50
-    const yShift = 100 + unwrap([0, 150]) - 75
-    const yStretch = 500 + unwrap([0, 100]) - 50
-    const yStretchMultiplier = 2
-    for (let i = -512; i < 512; i++) {
-        if (i < xShift)
-            arr.push({
-                x: i,
-                y:
-                    (-1 / xStretch) * Math.pow(i - xShift, 2) +
-                    yStretch / yStretchMultiplier +
-                    yShift
-            })
-        else
-            arr.push({
-                x: i,
-                y:
-                    yStretch /
-                        ((1 / (xStretch * 100)) * Math.pow(i - xShift, 2) +
-                            yStretchMultiplier) +
-                    yShift
-            })
+const linesGen2 = (unwrap = productionUnwrap): DrawableFunction => {
+    const piecewise = () => {
+        let arr: Point[] = []
+        const xShift = -100 + unwrap([0, 300]) - 80
+        const xStretch = 200 + unwrap([0, 100]) - 50
+        const yShift = 100 + unwrap([0, 150]) - 75
+        const yStretch = 500 + unwrap([0, 100]) - 50
+        const yStretchMultiplier = 2
+        for (let i = -512; i < 512; i++) {
+            if (i < xShift)
+                arr.push({
+                    x: i,
+                    y:
+                        (-1 / xStretch) * Math.pow(i - xShift, 2) +
+                        yStretch / yStretchMultiplier +
+                        yShift
+                })
+            else
+                arr.push({
+                    x: i,
+                    y:
+                        yStretch /
+                            ((1 / (xStretch * 100)) * Math.pow(i - xShift, 2) +
+                                yStretchMultiplier) +
+                        yShift
+                })
+        }
+        return arr
     }
-    return arr
-}
 
-let lineShapes: { points: Point[]; red: number; green: number }[] = []
-for (let i = 0; i < 200; i++) {
-    lineShapes.push({
-        points: piecewise(),
-        red: unwrap([200, 250]),
-        green: unwrap([150, 200])
-    })
-}
-const linesGen2 = () => {
+    let lineShapes: { points: Point[]; red: number; green: number }[] = []
+    for (let i = 0; i < 200; i++) {
+        lineShapes.push({
+            points: piecewise(),
+            red: unwrap([200, 250]),
+            green: unwrap([150, 200])
+        })
+    }
     const lambda: Lambda = (x: number) => {
         // generate x / 100 lines
         const lines = lineShapes.map((values, i) => {
@@ -52,12 +52,13 @@ const linesGen2 = () => {
                 zIndex: i
             })
         })
-        return {
-            shapes: lines,
-            dx: 5
-        }
+        return lines
     }
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 5,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default linesGen2

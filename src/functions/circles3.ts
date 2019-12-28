@@ -1,6 +1,6 @@
-import { Lambda, Point, Shape } from "../types"
+import { Lambda, Point, Shape, DrawableFunction } from "../types"
 
-const circlesGen3 = () => {
+const circlesGen3 = (): DrawableFunction => {
     const lambda: Lambda = (x: number) => {
         const shifted = x * 2
         const normalized = Math.sin((x * Math.PI) / 512) //-Math.pow(x - 256, 2) / (256 * 256) + 1;
@@ -42,13 +42,14 @@ const circlesGen3 = () => {
                 lineWidth: 1
             })
         ]
-        return {
-            shapes: [...circles, ...edgeCircles],
-            dx: 1
-        }
+        return [...circles, ...edgeCircles]
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default circlesGen3

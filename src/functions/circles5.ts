@@ -1,8 +1,8 @@
-import { Lambda, Shape, Value } from "../types"
+import { Lambda, Shape, Value, DrawableFunction } from "../types"
 import AnimatedCircle from "../animations/AnimatedCircle"
-import { unwrap } from "../utils"
+import { unwrap as productionUnwrap } from "../utils"
 
-const circlesGen5 = () => {
+const circlesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
     const randomArc = (config: {
         x: Value
         y: Value
@@ -179,15 +179,14 @@ const circlesGen5 = () => {
             circlesCount += 1
         })
 
-        return {
-            shapes: Array.from(circles.entries()).map(circle =>
-                circle[1].line(0.05)
-            ),
-            dx: 1
-        }
+        return Array.from(circles.entries()).map(circle => circle[1].line(0.05))
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default circlesGen5

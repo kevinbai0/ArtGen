@@ -1,5 +1,5 @@
-import { Lambda, MultiRange, Shape } from "../types"
-import { unwrap } from "../utils"
+import { Lambda, MultiRange, Shape, DrawableFunction } from "../types"
+import { unwrap as productionUnwrap } from "../utils"
 
 type MultiNumberRange = MultiRange<number>
 
@@ -13,7 +13,10 @@ export interface CirclesConfig {
     radius?: MultiNumberRange
 }
 
-const circleArtGenerator = (config?: CirclesConfig) => {
+const circleArtGenerator = (
+    config?: CirclesConfig,
+    unwrap = productionUnwrap
+): DrawableFunction => {
     let rangeR = (config && config.colorRange && config.colorRange.r) || [0, 0]
     let rangeG = (config && config.colorRange && config.colorRange.g) || [0, 0]
     let rangeB = (config && config.colorRange && config.colorRange.b) || [0, 0]
@@ -55,12 +58,13 @@ const circleArtGenerator = (config?: CirclesConfig) => {
                 })
             )
         }
-        return {
-            shapes: points,
-            dx: 0.1
-        }
+        return points
     }
-    return circles
+    return {
+        lambda: circles,
+        iterate: x => x + 0.1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default circleArtGenerator

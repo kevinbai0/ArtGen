@@ -5,16 +5,12 @@ import {
     DecoratedLine,
     Range,
     DecoratedArc,
-    Value
+    Value,
+    DrawableFunction
 } from "../types"
 
 import VirtualCanvas from "./VirtualCanvas"
 import { unwrap, unwrapColor } from "../utils"
-
-export interface StartConfiguration {
-    duration?: number
-    maxX?: number
-}
 
 type Separation = {
     fill: DecoratedShape[]
@@ -68,16 +64,16 @@ class DrawEngine {
     private _virtualCanvas: VirtualCanvas
     private _ctx: CanvasRenderingContext2D | null
     private _backgroundCtx: CanvasRenderingContext2D | null
-    private _functionMapper: Lambda
+    private _drawableFunction: DrawableFunction
     private _startTime: number = 0
     private _prevTime: number = 0
-    private _config?: StartConfiguration
+    private _iterationCount: number = 0
     private _unchangedState: Map<number, Separation>
     private _state: Map<number, DecoratedShape>
     private _timeTracker: TimeTracker
 
-    constructor(fun: Lambda, container: HTMLDivElement) {
-        this._functionMapper = fun
+    constructor(fun: DrawableFunction, container: HTMLDivElement) {
+        this._drawableFunction = fun
         // normalizing to square canvas
         const artboard = document.createElement("canvas")
         artboard.className = "artgen-canvas"
@@ -116,22 +112,22 @@ class DrawEngine {
 
     /**
      * Start the animation
-     * @param config
      */
-    start(config?: StartConfiguration) {
+    start() {
         if (!this._ctx || !this._backgroundCtx) return
         this._startTime = performance.now()
-        this._config = config
 
         // clear the state
         this._state = new Map<number, DecoratedShape>()
+        this._iterationCount = 0
+
         this._unchangedState = new Map<number, Separation>()
 
         requestAnimationFrame(() =>
             this._draw(
                 this._ctx!,
                 this._backgroundCtx!,
-                this._functionMapper,
+                this._drawableFunction,
                 0
             )
         )
@@ -143,17 +139,17 @@ class DrawEngine {
     private _draw = (
         ctx: CanvasRenderingContext2D,
         backgroundCtx: CanvasRenderingContext2D,
-        fun: Lambda,
+        fun: DrawableFunction,
         x: number
     ): void => {
         this._timeTracker.start()
 
-        const funResult = fun(x)
+        const funResult = fun.lambda(x, this._iterationCount)
         this._timeTracker.addBreakpoint("calculate")
 
         const next = () =>
-            this._iterate(x, funResult.dx, dx => {
-                this._draw(ctx, backgroundCtx, fun, x + dx)
+            this._iterate(x, fun, newX => {
+                this._draw(ctx, backgroundCtx, fun, newX)
             })
 
         function addToIndexedSeparationMap(
@@ -173,7 +169,7 @@ class DrawEngine {
         }
 
         // separate points between points that have changed state, and points that have not
-        const states = funResult.shapes.reduce(
+        const states = funResult.reduce(
             (accum, shape) => {
                 if (shape.stateIndex === undefined) {
                     addToIndexedSeparationMap(shape, this._unchangedState)
@@ -237,22 +233,26 @@ class DrawEngine {
         return next()
     }
 
-    private _iterate(x: number, dx: number, next: (dx: number) => void) {
-        if (this._config && (this._config.duration || this._config.maxX)) {
-            let currentTime = performance.now()
-            let runningTime = currentTime - this._startTime
-            const fps = 1000 / (currentTime - this._prevTime)
+    private _iterate(
+        currentX: number,
+        fun: DrawableFunction,
+        next: (x: number) => void
+    ) {
+        const currentTime = performance.now()
+        const runningTime = currentTime - this._startTime
 
-            if (this._prevTime !== 0) this.dataListener(fps, runningTime)
+        if (fun.endIf(runningTime, currentX)) return
 
-            this._prevTime = currentTime
+        const fps = 1000 / (currentTime - this._prevTime)
 
-            if (this._config.duration && runningTime > this._config.duration)
-                return
-            if (this._config.maxX && x + dx > this._config.maxX) return
-            return void requestAnimationFrame(_ => next(dx))
-        }
-        return void requestAnimationFrame(_ => next(dx))
+        if (this._prevTime !== 0) this.dataListener(fps, runningTime)
+
+        this._prevTime = currentTime
+        this._iterationCount += 1
+
+        return void requestAnimationFrame(_ =>
+            next(fun.iterate(currentX, runningTime))
+        )
     }
 
     private _render(

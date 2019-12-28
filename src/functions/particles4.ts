@@ -1,7 +1,7 @@
-import { Lambda, Shape } from "../types"
-import { unwrap, generate, updateShapes } from "../utils"
+import { Lambda, Shape, DrawableFunction } from "../types"
+import { unwrap as productionWrap, generate, updateShapes } from "../utils"
 
-const particlesGen4 = (): Lambda => {
+const particlesGen4 = (unwrap = productionWrap): DrawableFunction => {
     const baseParticles = generate(500, i => {
         let th = (i / 500) * 2 * Math.PI
         return Shape.point({
@@ -33,13 +33,14 @@ const particlesGen4 = (): Lambda => {
             }
         })
 
-        return {
-            shapes: baseParticles.concat(residualParticles),
-            dx: 1
-        }
+        return baseParticles.concat(residualParticles)
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default particlesGen4

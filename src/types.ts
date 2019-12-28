@@ -115,7 +115,19 @@ export const Shape = {
     }
 }
 
-export type Lambda = (x: number) => { shapes: DecoratedShape[]; dx: number }
+export type Lambda = (x: number, count: number) => DecoratedShape[]
+
+/**
+ * On Iteration
+ */
+export interface LambdaConfig {
+    iterate(prevX: number, timeLapsed: number): number
+    endIf(duration: number, x: number): boolean
+}
+
+export interface DrawableFunction extends LambdaConfig {
+    lambda: Lambda
+}
 
 export type Range<T> = [T, T]
 export type MultiRange<T> = Range<T> | Array<Range<T>>

@@ -1,8 +1,8 @@
-import { Lambda, Point, Shape } from "../types"
+import { Lambda, Point, Shape, DrawableFunction } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
-import { unwrap, rgba, generate } from "../utils"
+import { unwrap as productionUnwrap, rgba, generate } from "../utils"
 
-const linesGen5 = (): Lambda => {
+const linesGen5 = (unwrap = productionUnwrap): DrawableFunction => {
     const func = (theta: number, r: number): Point => {
         return {
             x: r * Math.cos(theta),
@@ -45,13 +45,14 @@ const linesGen5 = (): Lambda => {
             }
         })
 
-        return {
-            shapes: Array.from(lines.entries()).map(val => val[1].update(0.01)),
-            dx: 1
-        }
+        return Array.from(lines.entries()).map(val => val[1].update(0.01))
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default linesGen5

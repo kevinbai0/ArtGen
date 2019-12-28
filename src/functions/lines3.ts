@@ -1,8 +1,8 @@
-import { Lambda, Shape, Point } from "../types"
+import { Lambda, Shape, Point, DrawableFunction } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
-import { unwrap, generate } from "../utils"
+import { unwrap as productionUnwrap, generate } from "../utils"
 
-const linesGen3 = (): Lambda => {
+const linesGen3 = (unwrap = productionUnwrap): DrawableFunction => {
     const generateLine = (index: number, n: number, inverted: boolean) => {
         const randStretch = index + 1
         const points: Point[] = generate(1024, i => {
@@ -44,15 +44,14 @@ const linesGen3 = (): Lambda => {
             count += 1
         }
 
-        return {
-            shapes: Array.from(animatedLines.entries()).map(l =>
-                l[1].update(0.01)
-            ),
-            dx: 1
-        }
+        return Array.from(animatedLines.entries()).map(l => l[1].update(0.01))
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default linesGen3

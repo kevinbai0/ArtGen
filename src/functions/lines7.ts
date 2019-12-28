@@ -1,8 +1,8 @@
-import { Lambda, Point, Shape, DecoratedLine } from "../types"
+import { Lambda, Point, Shape, DecoratedLine, DrawableFunction } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
-import { unwrap, rgba, generate } from "../utils"
+import { unwrap as productionUnwrap, rgba, generate } from "../utils"
 
-const linesGen7 = (): Lambda => {
+const linesGen7 = (unwrap = productionUnwrap): DrawableFunction => {
     const eq1 = (theta: number, r: number): Point => {
         return {
             x: r * Math.cos(theta * 0.2),
@@ -43,7 +43,7 @@ const linesGen7 = (): Lambda => {
 
     let ended: DecoratedLine[] = []
 
-    const lambda: Lambda = (x: number) => {
+    const lambda: Lambda = x => {
         if (x < 300) {
             lines.set(count, generateLine(count, unwrap([0, 1]) ? eq1 : eq1))
             count += 2
@@ -59,13 +59,14 @@ const linesGen7 = (): Lambda => {
             }
         })
 
-        return {
-            shapes: Array.from(lines.entries()).map(val => val[1].update(0.01)),
-            dx: 1
-        }
+        return Array.from(lines.entries()).map(val => val[1].update(0.01))
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: (x, timeLapsed) => (timeLapsed / 10000) * 600,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default linesGen7

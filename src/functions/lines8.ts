@@ -1,8 +1,8 @@
-import { Lambda, Point, Shape, DecoratedLine } from "../types"
+import { Lambda, Point, Shape, DecoratedLine, DrawableFunction } from "../types"
 import AnimatedLine from "../animations/AnimatedLine"
-import { unwrap, rgba, generate } from "../utils"
+import { unwrap as productionUnwrap, rgba, generate } from "../utils"
 
-const linesGen8 = (): Lambda => {
+const linesGen8 = (unwrap = productionUnwrap): DrawableFunction => {
     const eq1 = (theta: number, r: number): Point => {
         return {
             x: r * Math.cos(theta * unwrap([0.19, 0.21])),
@@ -43,17 +43,17 @@ const linesGen8 = (): Lambda => {
     }
     let lines = new Map<number, AnimatedLine>()
     lines.set(0, generateLine(0, eq1))
-    let count = lines.size
+    let counter = lines.size
 
     let ended: DecoratedLine[] = []
 
-    const lambda: Lambda = (x: number) => {
-        if (x % 2 === 0) {
+    const lambda: Lambda = (x: number, count: number) => {
+        if (count % 2 === 0) {
             lines.set(
-                count,
-                generateLine(count, unwrap([0, 1]) < 0.5 ? eq1 : eq1)
+                counter,
+                generateLine(counter, unwrap([0, 1]) < 0.5 ? eq1 : eq1)
             )
-            count += 1
+            counter += 1
         }
 
         lines.forEach((line, key) => {
@@ -65,14 +65,16 @@ const linesGen8 = (): Lambda => {
                 return
             }
         })
+        console.log(x)
 
-        return {
-            shapes: Array.from(lines.entries()).map(val => val[1].update(0.01)),
-            dx: 1
-        }
+        return Array.from(lines.entries()).map(val => val[1].update(0.01))
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: (x, timeLapsed) => 600 * (timeLapsed / 10000),
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default linesGen8

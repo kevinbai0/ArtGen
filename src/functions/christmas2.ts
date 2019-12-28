@@ -1,7 +1,13 @@
-import { Lambda, Shape } from "../types"
-import { unwrap, rgba, withOpacity, generate, updateShapes } from "../utils"
+import { Lambda, Shape, DrawableFunction } from "../types"
+import {
+    unwrap as productionUnwrap,
+    rgba,
+    withOpacity,
+    generate,
+    updateShapes
+} from "../utils"
 
-const christmasGen2 = (): Lambda => {
+const christmasGen2 = (unwrap = productionUnwrap): DrawableFunction => {
     const baseParticles = generate(1000, i => {
         let randRed = unwrap([
             [255, 220],
@@ -24,7 +30,7 @@ const christmasGen2 = (): Lambda => {
         direction: unwrap([0, 1]) < 0.5
     }))
 
-    const lambda: Lambda = (x: number) => {
+    const lambda: Lambda = x => {
         const residual = baseParticles.map(shape => {
             return {
                 ...shape,
@@ -48,14 +54,14 @@ const christmasGen2 = (): Lambda => {
             })
         }
 
-        return {
-            shapes:
-                x < 100 ? baseParticles.slice(x * 10, x * 10 + 10) : residual,
-            dx: 1
-        }
+        return x < 100 ? baseParticles.slice(x * 10, x * 10 + 10) : residual
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default christmasGen2

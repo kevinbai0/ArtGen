@@ -1,7 +1,7 @@
-import { Lambda, Shape } from "../types"
-import { unwrap } from "../utils"
+import { Lambda, Shape, DrawableFunction } from "../types"
+import { unwrap as productionUnwrap } from "../utils"
 
-const linesGen = () => {
+const linesGen = (unwrap = productionUnwrap): DrawableFunction => {
     const lambda: Lambda = (x: number) => {
         const lines = [
             Shape.line({
@@ -32,12 +32,13 @@ const linesGen = () => {
                 zIndex: 1
             })
         ]
-        return {
-            shapes: lines,
-            dx: 1
-        }
+        return lines
     }
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default linesGen

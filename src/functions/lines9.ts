@@ -1,16 +1,24 @@
-import { Lambda, Shape, DecoratedPoint } from "../types"
-import { unwrap, rgba, generate, updateShapes } from "../utils"
+import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../types"
+import { unwrap as productionUnwrap, rgba } from "../utils"
 
-const linesGen9 = (): Lambda => {
+const linesGen9 = (unwrap = productionUnwrap): DrawableFunction => {
+    /**
+     * Set up, initialize
+     */
     let point = Shape.point({
-        x: 1, //unwrap([-512, 512]),
-        y: 1, //unwrap([-512, 512]),
+        x: 1,
+        y: 1,
         fill: rgba(20, 0, unwrap([50, 255]), 0.1),
         radius: 2
     })
     const a = 0.912
     const b = 0.7724381
-    const lambda: Lambda = (xVal: number) => {
+
+    /**
+     * Create Lambda (takes in number, outputs shapes)
+     */
+
+    const lambda: Lambda = (_: number) => {
         let newPoints: DecoratedPoint[] = []
 
         for (let i = 0; i < 800; ++i) {
@@ -27,15 +35,19 @@ const linesGen9 = (): Lambda => {
                 y: unwrap(point.y) * 250
             })
         }
-        console.log(point.fill)
 
-        return {
-            shapes: newPoints,
-            dx: 1
-        }
+        return newPoints
     }
 
-    return lambda
+    /**
+     * Returns lambda and config? if config is undefined, use default config
+     */
+
+    return {
+        lambda,
+        iterate: _ => 0,
+        endIf: (duration: number, x: number) => duration >= 10000
+    }
 }
 
 export default linesGen9

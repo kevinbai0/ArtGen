@@ -1,8 +1,8 @@
-import { Lambda, Shape } from "../types"
+import { Lambda, Shape, DrawableFunction } from "../types"
 import AnimatedCircle from "../animations/AnimatedCircle"
-import { unwrap } from "../utils"
+import { unwrap as productionUnwrap } from "../utils"
 
-const circlesGen4 = () => {
+const circlesGen4 = (unwrap = productionUnwrap): DrawableFunction => {
     const randomArc = (x: number, y: number, radius: number, key?: number) => {
         const color = `rgba(${unwrap([50, 200])}, 0, 0, 1)`
         return Shape.arc({
@@ -44,15 +44,14 @@ const circlesGen4 = () => {
             circlesCount += 1
         })
 
-        return {
-            shapes: Array.from(circles.entries()).map(circle =>
-                circle[1].line(0.05)
-            ),
-            dx: 1
-        }
+        return Array.from(circles.entries()).map(circle => circle[1].line(0.05))
     }
 
-    return lambda
+    return {
+        lambda,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
 }
 
 export default circlesGen4
