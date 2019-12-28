@@ -1,10 +1,10 @@
-import { Lambda, Shape, DrawableFunction } from "../types"
+import { Lambda, Shape, DrawableFunction } from "../../types"
 import {
     unwrap as productionUnwrap,
     rgba,
     generate,
     updateShapes
-} from "../utils"
+} from "../../utils"
 
 const particlesGen3 = (unwrap = productionUnwrap): DrawableFunction => {
     let points = generate(500, i => {

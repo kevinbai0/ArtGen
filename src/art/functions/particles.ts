@@ -1,5 +1,5 @@
-import { Lambda, DecoratedPoint, Shape, DrawableFunction } from "../types"
-import { unwrap as productionUnwrap, generate, updateShapes } from "../utils"
+import { Lambda, DecoratedPoint, Shape, DrawableFunction } from "../../types"
+import { unwrap as productionUnwrap, generate, updateShapes } from "../../utils"
 
 const particlesGen = (unwrap = productionUnwrap): DrawableFunction => {
     const len = 800

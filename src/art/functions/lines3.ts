@@ -1,6 +1,6 @@
-import { Lambda, Shape, Point, DrawableFunction } from "../types"
-import AnimatedLine from "../animations/AnimatedLine"
-import { unwrap as productionUnwrap, generate } from "../utils"
+import { Lambda, Shape, Point, DrawableFunction } from "../../types"
+import AnimatedLine from "../../animations/AnimatedLine"
+import { unwrap as productionUnwrap, generate } from "../../utils"
 
 const linesGen3 = (unwrap = productionUnwrap): DrawableFunction => {
     const generateLine = (index: number, n: number, inverted: boolean) => {

@@ -1,5 +1,5 @@
-import { Lambda, MultiRange, Shape, DrawableFunction } from "../types"
-import { unwrap as productionUnwrap } from "../utils"
+import { Lambda, MultiRange, Shape, DrawableFunction } from "../../types"
+import { unwrap as productionUnwrap } from "../../utils"
 
 type MultiNumberRange = MultiRange<number>
 

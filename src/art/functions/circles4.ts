@@ -1,6 +1,6 @@
-import { Lambda, Shape, DrawableFunction } from "../types"
-import AnimatedCircle from "../animations/AnimatedCircle"
-import { unwrap as productionUnwrap } from "../utils"
+import { Lambda, Shape, DrawableFunction } from "../../types"
+import AnimatedCircle from "../../animations/AnimatedCircle"
+import { unwrap as productionUnwrap } from "../../utils"
 
 const circlesGen4 = (unwrap = productionUnwrap): DrawableFunction => {
     const randomArc = (x: number, y: number, radius: number, key?: number) => {

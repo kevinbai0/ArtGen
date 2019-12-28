@@ -1,11 +1,11 @@
-import { Lambda, Shape, DrawableFunction } from "../types"
+import { Lambda, Shape, DrawableFunction } from "../../types"
 import {
     unwrap as productionUnwrap,
     rgba,
     withOpacity,
     generate,
     updateShapes
-} from "../utils"
+} from "../../utils"
 
 const christmasGen2 = (unwrap = productionUnwrap): DrawableFunction => {
     const baseParticles = generate(1000, i => {

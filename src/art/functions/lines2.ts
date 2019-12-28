@@ -1,5 +1,5 @@
-import { Lambda, Shape, Point, DrawableFunction } from "../types"
-import { unwrap as productionUnwrap } from "../utils"
+import { Lambda, Shape, Point, DrawableFunction } from "../../types"
+import { unwrap as productionUnwrap } from "../../utils"
 
 const linesGen2 = (unwrap = productionUnwrap): DrawableFunction => {
     const piecewise = () => {

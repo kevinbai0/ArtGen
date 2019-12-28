@@ -1,5 +1,5 @@
-import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../types"
-import { unwrap as productionUnwrap, rgba } from "../utils"
+import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../../types"
+import { unwrap as productionUnwrap, rgba } from "../../utils"
 
 const linesGen9 = (unwrap = productionUnwrap): DrawableFunction => {
     /**

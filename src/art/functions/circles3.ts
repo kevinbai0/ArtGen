@@ -1,4 +1,4 @@
-import { Lambda, Point, Shape, DrawableFunction } from "../types"
+import { Lambda, Point, Shape, DrawableFunction } from "../../types"
 
 const circlesGen3 = (): DrawableFunction => {
     const lambda: Lambda = (x: number) => {
