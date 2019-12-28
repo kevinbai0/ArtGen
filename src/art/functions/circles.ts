@@ -13,8 +13,7 @@ export interface CirclesConfig {
     radius?: MultiNumberRange
 }
 
-const circleArtGenerator = (
-    config?: CirclesConfig,
+const circleArtGenerator = (config?: CirclesConfig) => (
     unwrap = productionUnwrap
 ): DrawableFunction => {
     let rangeR = (config && config.colorRange && config.colorRange.r) || [0, 0]

@@ -1,5 +1,5 @@
 const artgen = document.getElementById("artgen")
-const { DrawEngine, art, utils } = ArtGen
+const { DrawEngine, art } = ArtGen
 
 let drawEngine = new DrawEngine(art.particles, artgen)
 
@@ -36,5 +36,5 @@ function start() {
     drawEngine.start({
         duration: 10000
     })
-    button.className = utils.addClassName(button.className, "hidden")
+    button.className = button.className + " hidden"
 }

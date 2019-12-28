@@ -16,24 +16,6 @@ export function generate<T>(count: number, callback: (index: number) => T) {
     return [...Array(count)].map((_, i) => callback(i))
 }
 
-export function addClassName(currentClassName: string, className: string) {
-    return [
-        ...currentClassName
-            .trim()
-            .split(" ")
-            .filter(str => str !== className),
-        className
-    ].join(" ")
-}
-
-export function removeClassName(currentClassName: string, className: string) {
-    return currentClassName
-        .trim()
-        .split(" ")
-        .filter(str => str !== className)
-        .join(" ")
-}
-
 export const rgba = (r: Value, g: Value, b: Value, a: Value): Color => {
     return {
         r: unwrap(r),

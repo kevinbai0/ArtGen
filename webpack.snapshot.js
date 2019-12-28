@@ -1,17 +1,15 @@
 const path = require("path")
 
 module.exports = {
-    entry: "./src/index",
-    target: "web",
+    entry: "./snapshots/index.ts",
+    target: "node",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"]
     },
+    mode: "development",
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "artgen.bundle.js",
-        library: "ArtGen",
-        libraryTarget: "umd",
-        globalObject: "this"
+        filename: "snapshots.bundle.js"
     },
     module: {
         rules: [
