@@ -11,9 +11,9 @@
     "build": "webpack --config webpack.prod.js",
     "dev": "webpack-dev-server --mode development --config webpack.dev.js",
     "snapshots": "webpack --config webpack.snapshot.js && node dist/snapshots.bundle.js",
-    "lint": "eslint src/**/*",
+    "lint": "eslint src/**/**/*",
     "prepublishOnly": "npm run build",
-    "test": "jest"
+    "test": "npm run lint && jest"
   },
   "homepage": "https://github.com/kevinbai0/artgen#readme",
   "keywords": [],
