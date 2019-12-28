@@ -28,6 +28,12 @@ import particlesGen6 from "../src/art/functions/particles6"
 import particlesGen7 from "../src/art/functions/particles7"
 import particlesGen8 from "../src/art/functions/particles8"
 
+const args = process.argv.slice(2)
+
+const dir = `./dist/${
+    args.length > 0 && args[0] === "--save" ? "test-" : ""
+}snapshots`
+
 const SaveSnapShot = (
     fun: (unwrapper: typeof unwrap) => DrawableFunction,
     name: string
@@ -36,7 +42,7 @@ const SaveSnapShot = (
     console.log(`Saving snapshot for ${name} to ${name}.txt`)
     let json = JSON.stringify(TestingDrawingEngine(fun))
     return new Promise((resolve, reject) => {
-        fs.writeFile(`./dist/snapshots/${name}.txt`, json, err => {
+        fs.writeFile(`${dir}/${name}.txt`, json, err => {
             if (err) {
                 reject()
                 console.log(`Couldn't save file ${name}.txt`)
@@ -108,10 +114,10 @@ const saveSnapshots = (values: typeof snapshots) => {
 }
 
 new Promise((resolve, reject) =>
-    fs.exists("./dist/snapshots", exists => {
+    fs.exists(dir, exists => {
         if (!exists)
             return new Promise(() =>
-                fs.mkdir("./dist/snapshots", err => {
+                fs.mkdir(dir, err => {
                     if (err) reject()
                     resolve()
                 })

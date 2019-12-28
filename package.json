@@ -10,10 +10,11 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "dev": "webpack-dev-server --mode development --config webpack.dev.js",
-    "snapshots": "webpack --config webpack.snapshot.js && node dist/snapshots.bundle.js",
-    "lint": "eslint src/**/**/*",
-    "prepublishOnly": "npm run build",
-    "test": "npm run lint && jest"
+    "snapshots:test": "webpack --config webpack.snapshot.js && node dist/snapshots.bundle.js",
+    "snapshots:save": "webpack --config webpack.snapshot.js && node dist/snapshots.bundle.js --save",
+    "lint": "eslint \"{src,test}/**/**/*.{ts,js}\"",
+    "prepublishOnly": "npm run lint && npm run test && npm run build",
+    "test": "npm run snapshots:test && jest"
   },
   "homepage": "https://github.com/kevinbai0/artgen#readme",
   "keywords": [],
