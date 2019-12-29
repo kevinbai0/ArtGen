@@ -4,8 +4,10 @@
   "description": "A lightweight dependency-free Javascript library to create generative art.",
   "repository": "https://www.github.com/kevinbai0/ArtGen.git",
   "main": "dist/artgen.bundle.js",
+  "types": "dist/types/index.d.ts",
   "files": [
-    "dist/artgen.bundle.js"
+    "dist/artgen.bundle.js",
+    "dist/types"
   ],
   "scripts": {
     "build": "webpack --config webpack.prod.js",
@@ -13,7 +15,8 @@
     "snapshots:test": "webpack --config webpack.snapshot.js && node dist/snapshots.bundle.js",
     "snapshots:save": "webpack --config webpack.snapshot.js && node dist/snapshots.bundle.js --save",
     "lint": "eslint \"{src,test}/**/**/*.{ts,js}\"",
-    "prepublishOnly": "npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm run lint && npm run test && npm run tsc && npm run build",
+    "tsc": "tsc && eslint ./dist/types/**/**/*.ts --fix && eslint ./dist/types/**/*.ts --fix && eslint ./dist/types/*.ts --fix",
     "test": "npm run snapshots:test && jest"
   },
   "homepage": "https://github.com/kevinbai0/artgen#readme",
