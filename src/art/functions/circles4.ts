@@ -1,8 +1,10 @@
-import { Lambda, Shape, DrawableFunction } from "../../types"
+import { Lambda, Shape, Injectables, DrawableFunction } from "../../types"
 import AnimatedCircle from "../../animations/AnimatedCircle"
-import { unwrap as productionUnwrap } from "../../utils"
+import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
 
-const circlesGen4 = (unwrap = productionUnwrap): DrawableFunction => {
+const circlesGen4: DrawableFunction = (
+    { unwrap }: Injectables = { unwrap: productionUnwrap, rgba: productionRGBA }
+) => {
     const randomArc = (x: number, y: number, radius: number, key?: number) => {
         const color = `rgba(${unwrap([50, 200])}, 0, 0, 1)`
         return Shape.arc({

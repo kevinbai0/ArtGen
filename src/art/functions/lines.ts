@@ -1,7 +1,9 @@
-import { Lambda, Shape, DrawableFunction } from "../../types"
-import { unwrap as productionUnwrap } from "../../utils"
+import { Lambda, Shape, Injectables, DrawableFunction } from "../../types"
+import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
 
-const linesGen = (unwrap = productionUnwrap): DrawableFunction => {
+const linesGen: DrawableFunction = (
+    { unwrap }: Injectables = { unwrap: productionUnwrap, rgba: productionRGBA }
+) => {
     const lambda: Lambda = (x: number) => {
         const lines = [
             Shape.line({

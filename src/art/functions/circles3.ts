@@ -1,6 +1,6 @@
-import { Lambda, Point, Shape, DrawableFunction } from "../../types"
+import { Lambda, Shape, DrawableFunction } from "../../types"
 
-const circlesGen3 = (): DrawableFunction => {
+const circlesGen3: DrawableFunction = () => {
     const lambda: Lambda = (x: number) => {
         const shifted = x * 2
         const normalized = Math.sin((x * Math.PI) / 512) //-Math.pow(x - 256, 2) / (256 * 256) + 1;

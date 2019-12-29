@@ -1,4 +1,4 @@
-import { Lambda, Shape, DrawableFunction } from "../../types"
+import { Lambda, Shape, DrawableFunction, Injectables } from "../../types"
 import {
     unwrap as productionWrap,
     rgba as productionRGBA,
@@ -6,10 +6,12 @@ import {
     updateShapes
 } from "../../utils"
 
-const particlesGen6 = (
-    unwrap = productionWrap,
-    rgba = productionRGBA
-): DrawableFunction => {
+const particlesGen6: DrawableFunction = (
+    { unwrap, rgba }: Injectables = {
+        unwrap: productionWrap,
+        rgba: productionRGBA
+    }
+) => {
     const baseParticles = generate(500, i => {
         let th = (i / 500) * 2 * Math.PI
         return Shape.point({

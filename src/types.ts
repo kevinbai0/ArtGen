@@ -1,3 +1,5 @@
+import { unwrap, rgba } from "./utils"
+
 export enum ShapeType {
     point = "point",
     line = "line",
@@ -125,9 +127,16 @@ export interface LambdaConfig {
     endIf(duration: number, x: number): boolean
 }
 
-export interface DrawableFunction extends LambdaConfig {
+export interface DrawableFunctionConfig extends LambdaConfig {
     lambda: Lambda
 }
+
+export interface Injectables {
+    unwrap: typeof unwrap
+    rgba: typeof rgba
+}
+
+export type DrawableFunction = (modules?: Injectables) => DrawableFunctionConfig
 
 export type Range<T> = [T, T]
 export type MultiRange<T> = Range<T> | Array<Range<T>>

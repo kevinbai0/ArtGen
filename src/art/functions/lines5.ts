@@ -1,4 +1,10 @@
-import { Lambda, Point, Shape, DrawableFunction } from "../../types"
+import {
+    Lambda,
+    Point,
+    Shape,
+    Injectables,
+    DrawableFunction
+} from "../../types"
 import AnimatedLine from "../../animations/AnimatedLine"
 import {
     unwrap as productionUnwrap,
@@ -6,10 +12,12 @@ import {
     generate
 } from "../../utils"
 
-const linesGen5 = (
-    unwrap = productionUnwrap,
-    rgba = productionRGBA
-): DrawableFunction => {
+const linesGen5: DrawableFunction = (
+    { unwrap, rgba }: Injectables = {
+        unwrap: productionUnwrap,
+        rgba: productionRGBA
+    }
+) => {
     const func = (theta: number, r: number): Point => {
         return {
             x: r * Math.cos(theta),

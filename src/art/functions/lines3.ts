@@ -1,8 +1,20 @@
-import { Lambda, Shape, Point, DrawableFunction } from "../../types"
+import {
+    Lambda,
+    Shape,
+    Point,
+    Injectables,
+    DrawableFunction
+} from "../../types"
 import AnimatedLine from "../../animations/AnimatedLine"
-import { unwrap as productionUnwrap, generate } from "../../utils"
+import {
+    unwrap as productionUnwrap,
+    rgba as productionRGBA,
+    generate
+} from "../../utils"
 
-const linesGen3 = (unwrap = productionUnwrap): DrawableFunction => {
+const linesGen3: DrawableFunction = (
+    { unwrap }: Injectables = { unwrap: productionUnwrap, rgba: productionRGBA }
+) => {
     const generateLine = (index: number, n: number, inverted: boolean) => {
         const randStretch = index + 1
         const points: Point[] = generate(1024, i => {

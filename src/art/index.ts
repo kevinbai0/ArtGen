@@ -24,7 +24,7 @@ import linesGen8 from "./functions/lines8"
 import particlesGen9 from "./functions/particles9"
 import particlesGen10 from "./functions/particles10"
 
-export const circles = circleArtGenerator({
+const circlesGen = circleArtGenerator({
     colorRange: {
         r: [
             [0, 100],
@@ -45,50 +45,30 @@ export const circles = circleArtGenerator({
     ]
 })
 
-export const circles2 = circlesGen2()
-
-export const lines = linesGen()
-
-export const lines2 = linesGen2()
-
-export const circles3 = circlesGen3()
-
-export const particles = particlesGen()
-
-export const particles2 = particlesGen2()
-
-export const particles3 = particlesGen3()
-
-export const circles4 = circlesGen4()
-
-export const circles5 = circlesGen5()
-
-export const lines3 = linesGen3()
-
-export const particles4 = particlesGen4()
-
-export const particles5 = particlesGen5()
-
-export const lines4 = linesGen4()
-
-export const lines5 = linesGen5()
-
-export const lines6 = linesGen6()
-
-export const lines7 = linesGen7()
-
-export const particles6 = particlesGen6()
-
-export const particles7 = particlesGen7()
-
-export const particles8 = particlesGen8()
-
-export const christmas = christmasGen()
-
-export const christmas2 = christmasGen2()
-
-export const lines8 = linesGen8()
-
-export const particles9 = particlesGen9()
-
-export const particles10 = particlesGen10()
+export {
+    circlesGen,
+    circlesGen2,
+    circlesGen3,
+    circlesGen4,
+    circlesGen5,
+    linesGen,
+    linesGen2,
+    linesGen3,
+    linesGen4,
+    linesGen5,
+    linesGen6,
+    linesGen7,
+    linesGen8,
+    particlesGen,
+    particlesGen2,
+    particlesGen3,
+    particlesGen4,
+    particlesGen5,
+    particlesGen6,
+    particlesGen7,
+    particlesGen8,
+    particlesGen9,
+    particlesGen10,
+    christmasGen,
+    christmasGen2
+}

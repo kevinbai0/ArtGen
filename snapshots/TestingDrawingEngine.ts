@@ -1,11 +1,10 @@
 import {
-    DrawableFunction,
     Value,
     Range,
     DecoratedShape,
-    Color
+    Color,
+    DrawableFunction
 } from "../src/types"
-import { unwrap, rgba } from "../src/utils"
 
 /**
  * instead of a random number between two values, it returns the midpoint of 2 numbers
@@ -31,17 +30,12 @@ const customRgba = (r: Value, g: Value, b: Value, a: Value): Color => {
     }
 }
 
-const TestingDrawingEngine = (
-    testingFunction: (
-        unwrapper: typeof unwrap,
-        rgbaUnwrapper: typeof rgba
-    ) => DrawableFunction
-) => {
+const TestingDrawingEngine = (testingFunction: DrawableFunction) => {
     let count = 0
     let x = 0
     let duration = 0
 
-    const fun = testingFunction(customUnwrap, customRgba)
+    const fun = testingFunction({ unwrap: customUnwrap, rgba: customRgba })
 
     let shapes: DecoratedShape[][] = []
 

@@ -1,7 +1,9 @@
-import { Lambda, Shape, DrawableFunction } from "../../types"
-import { unwrap as productionUnwrap } from "../../utils"
+import { Lambda, Shape, Injectables, DrawableFunction } from "../../types"
+import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
 
-const circlesGen2 = (unwrap = productionUnwrap): DrawableFunction => {
+const circlesGen2: DrawableFunction = (
+    { unwrap }: Injectables = { unwrap: productionUnwrap, rgba: productionRGBA }
+) => {
     const stroke = (x: number) => {
         if ((Math.round(x * 10) / 10) % 1 === 0) {
             return [

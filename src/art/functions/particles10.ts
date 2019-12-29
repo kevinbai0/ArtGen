@@ -1,14 +1,22 @@
-import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../../types"
+import {
+    Lambda,
+    Shape,
+    DecoratedPoint,
+    DrawableFunction,
+    Injectables
+} from "../../types"
 import {
     unwrap as productionUnwrap,
     rgba as productionRGBA,
     generate
 } from "../../utils"
 
-const particlesGen10 = (
-    unwrap = productionUnwrap,
-    rgba = productionRGBA
-): DrawableFunction => {
+const particlesGen10: DrawableFunction = (
+    { unwrap, rgba }: Injectables = {
+        unwrap: productionUnwrap,
+        rgba: productionRGBA
+    }
+) => {
     /**
      * Set up, initialize
      */

@@ -1,12 +1,11 @@
 import {
-    Lambda,
     DecoratedPoint,
     DecoratedShape,
     DecoratedLine,
     Range,
     DecoratedArc,
     Value,
-    DrawableFunction
+    DrawableFunctionConfig
 } from "../types"
 
 import VirtualCanvas from "./VirtualCanvas"
@@ -64,7 +63,7 @@ class DrawEngine {
     private _virtualCanvas: VirtualCanvas
     private _ctx: CanvasRenderingContext2D | null
     private _backgroundCtx: CanvasRenderingContext2D | null
-    private _drawableFunction: DrawableFunction
+    private _DrawableFunctionConfig: DrawableFunctionConfig
     private _startTime: number = 0
     private _prevTime: number = 0
     private _iterationCount: number = 0
@@ -72,8 +71,8 @@ class DrawEngine {
     private _state: Map<number, DecoratedShape>
     private _timeTracker: TimeTracker
 
-    constructor(fun: DrawableFunction, container: HTMLDivElement) {
-        this._drawableFunction = fun
+    constructor(fun: DrawableFunctionConfig, container: HTMLDivElement) {
+        this._DrawableFunctionConfig = fun
         // normalizing to square canvas
         const artboard = document.createElement("canvas")
         artboard.className = "artgen-canvas"
@@ -127,7 +126,7 @@ class DrawEngine {
             this._draw(
                 this._ctx!,
                 this._backgroundCtx!,
-                this._drawableFunction,
+                this._DrawableFunctionConfig,
                 0
             )
         )
@@ -139,7 +138,7 @@ class DrawEngine {
     private _draw = (
         ctx: CanvasRenderingContext2D,
         backgroundCtx: CanvasRenderingContext2D,
-        fun: DrawableFunction,
+        fun: DrawableFunctionConfig,
         x: number
     ): void => {
         this._timeTracker.start()
@@ -235,7 +234,7 @@ class DrawEngine {
 
     private _iterate(
         currentX: number,
-        fun: DrawableFunction,
+        fun: DrawableFunctionConfig,
         next: (x: number) => void
     ) {
         const currentTime = performance.now()

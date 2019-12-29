@@ -3,6 +3,7 @@ import {
     Point,
     Shape,
     DecoratedLine,
+    Injectables,
     DrawableFunction
 } from "../../types"
 import AnimatedLine from "../../animations/AnimatedLine"
@@ -12,10 +13,12 @@ import {
     generate
 } from "../../utils"
 
-const linesGen8 = (
-    unwrap = productionUnwrap,
-    rgba = productionRGBA
-): DrawableFunction => {
+const linesGen8: DrawableFunction = (
+    { unwrap, rgba }: Injectables = {
+        unwrap: productionUnwrap,
+        rgba: productionRGBA
+    }
+) => {
     const eq1 = (theta: number, r: number): Point => {
         return {
             x: r * Math.cos(theta * unwrap([0.19, 0.21])),
