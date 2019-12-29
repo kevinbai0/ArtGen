@@ -6,7 +6,6 @@ import linesGen5 from "../../src/art/functions/lines5"
 import linesGen6 from "../../src/art/functions/lines6"
 import linesGen7 from "../../src/art/functions/lines7"
 import linesGen8 from "../../src/art/functions/lines8"
-import linesGen9 from "../../src/art/functions/lines9"
 import circlesGen, { CirclesConfig } from "../../src/art/functions/circles"
 import circlesGen2 from "../../src/art/functions/circles2"
 import circlesGen3 from "../../src/art/functions/circles3"
@@ -24,6 +23,7 @@ import particlesGen7 from "../../src/art/functions/particles7"
 import particlesGen8 from "../../src/art/functions/particles8"
 
 import fs from "fs"
+import particlesGen9 from "../../src/art/functions/particles9"
 
 const circlesGenConfig: CirclesConfig = {
     colorRange: {
@@ -80,7 +80,6 @@ const snapshots: [typeof linesGen, string][] = [
     [linesGen6, "lines6"],
     [linesGen7, "lines7"],
     [linesGen8, "lines8"],
-    [linesGen9, "lines9"],
     [circlesGen(circlesGenConfig), "circles"],
     [circlesGen2, "circles2"],
     [circlesGen3, "circles3"],
@@ -95,7 +94,8 @@ const snapshots: [typeof linesGen, string][] = [
     [particlesGen5, "particles5"],
     [particlesGen6, "particles6"],
     [particlesGen7, "particles7"],
-    [particlesGen8, "particles8"]
+    [particlesGen8, "particles8"],
+    [particlesGen9, "particles9"]
 ]
 
 function runExpect(pair: typeof snapshots[0], done: jest.DoneCallback) {

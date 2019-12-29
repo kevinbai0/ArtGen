@@ -1,7 +1,7 @@
 import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../../types"
 import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
 
-const linesGen9 = (
+const particlesGen9 = (
     unwrap = productionUnwrap,
     rgba = productionRGBA
 ): DrawableFunction => {
@@ -53,4 +53,4 @@ const linesGen9 = (
     }
 }
 
-export default linesGen9
+export default particlesGen9
