@@ -1,18 +1,7 @@
-import { Lambda, Shape, DrawableFunction, Injectables } from "../../types"
-import {
-    unwrap as productionUnwrap,
-    withOpacity,
-    rgba as productionRGBA,
-    generate,
-    updateShapes
-} from "../../utils"
+import { Lambda, Shape, DrawableFunction } from "../../types"
+import { withOpacity, generate, updateShapes } from "../../utils"
 
-const christmasGen: DrawableFunction = (
-    { unwrap, rgba }: Injectables = {
-        unwrap: productionUnwrap,
-        rgba: productionRGBA
-    }
-) => {
+const christmasGen: DrawableFunction = ({ unwrap, rgba }) => {
     const baseParticles = generate(500, i => {
         let randRed = unwrap([
             [255, 220],

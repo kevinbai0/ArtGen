@@ -1,15 +1,6 @@
-import {
-    Lambda,
-    Shape,
-    Point,
-    Injectables,
-    DrawableFunction
-} from "../../types"
-import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
+import { Lambda, Shape, Point, DrawableFunction } from "../../types"
 
-const linesGen2: DrawableFunction = (
-    { unwrap }: Injectables = { unwrap: productionUnwrap, rgba: productionRGBA }
-) => {
+const linesGen2: DrawableFunction = ({ unwrap }) => {
     const piecewise = () => {
         let arr: Point[] = []
         const xShift = -100 + unwrap([0, 300]) - 80

@@ -29,14 +29,14 @@ class Animated<T extends DecoratedShape> {
     update(delta: number) {
         if (this._delay > 0) {
             this._delay -= 1
-            return { ...this._shape }
+            return this.shape.clone()
         }
 
         this.willUpdate(this._percentage + delta, this._percentage)
         this._percentage += delta
         this.didUpdate(this.percentage, this.percentage - delta)
         if (this._percentage > 1.05) this._ended = true
-        return { ...this._shape }
+        return this.shape.clone()
     }
 }
 

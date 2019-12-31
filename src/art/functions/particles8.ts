@@ -1,18 +1,8 @@
 import { Lambda, Shape, RGBA, DrawableFunction, Injectables } from "../../types"
 import AnimatedPoint from "../../animations/AnimatedPoint"
-import {
-    unwrap as productionWrap,
-    rgba as productionRGBA,
-    generate,
-    updateShapes
-} from "../../utils"
+import { generate, updateShapes } from "../../utils"
 
-const particlesGen8: DrawableFunction = (
-    { unwrap, rgba }: Injectables = {
-        unwrap: productionWrap,
-        rgba: productionRGBA
-    }
-) => {
+const particlesGen8: DrawableFunction = ({ unwrap, rgba }) => {
     const baseParticles = generate(20, i => {
         let th = (unwrap([0, 20]) / 20) * 2 * Math.PI
         return Shape.point({

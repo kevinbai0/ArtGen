@@ -9,7 +9,7 @@ import AnimatedCircle from "../../animations/AnimatedCircle"
 import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
 
 const circlesGen5: DrawableFunction = (
-    { unwrap }: Injectables = { unwrap: productionUnwrap, rgba: productionRGBA }
+    { unwrap } = { unwrap: productionUnwrap, rgba: productionRGBA }
 ) => {
     const randomArc = (config: {
         x: Value

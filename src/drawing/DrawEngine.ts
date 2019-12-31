@@ -5,11 +5,12 @@ import {
     Range,
     DecoratedArc,
     Value,
+    DrawableFunction,
     DrawableFunctionConfig
 } from "../types"
 
 import VirtualCanvas from "./VirtualCanvas"
-import { unwrap, unwrapColor } from "../utils"
+import { unwrap, unwrapColor, rgba } from "../utils"
 
 type Separation = {
     fill: DecoratedShape[]
@@ -63,16 +64,15 @@ class DrawEngine {
     private _virtualCanvas: VirtualCanvas
     private _ctx: CanvasRenderingContext2D | null
     private _backgroundCtx: CanvasRenderingContext2D | null
-    private _DrawableFunctionConfig: DrawableFunctionConfig
+    private _drawableFunctionConfig: DrawableFunctionConfig
     private _startTime: number = 0
     private _prevTime: number = 0
     private _iterationCount: number = 0
-    private _unchangedState: Map<number, Separation>
     private _state: Map<number, DecoratedShape>
     private _timeTracker: TimeTracker
 
-    constructor(fun: DrawableFunctionConfig, container: HTMLDivElement) {
-        this._DrawableFunctionConfig = fun
+    constructor(fun: DrawableFunction, container: HTMLDivElement) {
+        this._drawableFunctionConfig = fun({ unwrap, rgba })
         // normalizing to square canvas
         const artboard = document.createElement("canvas")
         artboard.className = "artgen-canvas"
@@ -95,7 +95,6 @@ class DrawEngine {
         this._ctx = artboard.getContext("2d")
         this._backgroundCtx = backgroundArtboard.getContext("2d")
         this._state = new Map<number, DecoratedShape>()
-        this._unchangedState = new Map<number, Separation>()
 
         this._startTime = 0
         this._timeTracker = new TimeTracker()
@@ -120,13 +119,11 @@ class DrawEngine {
         this._state = new Map<number, DecoratedShape>()
         this._iterationCount = 0
 
-        this._unchangedState = new Map<number, Separation>()
-
         requestAnimationFrame(() =>
             this._draw(
                 this._ctx!,
                 this._backgroundCtx!,
-                this._DrawableFunctionConfig,
+                this._drawableFunctionConfig,
                 0
             )
         )
@@ -142,7 +139,6 @@ class DrawEngine {
         x: number
     ): void => {
         this._timeTracker.start()
-
         const funResult = fun.lambda(x, this._iterationCount)
         this._timeTracker.addBreakpoint("calculate")
 
@@ -171,7 +167,6 @@ class DrawEngine {
         const states = funResult.reduce(
             (accum, shape) => {
                 if (shape.stateIndex === undefined) {
-                    addToIndexedSeparationMap(shape, this._unchangedState)
                     addToIndexedSeparationMap(shape, accum.staticState)
                     return accum
                 }
@@ -259,7 +254,7 @@ class DrawEngine {
         entries: IterableIterator<[number, Separation]>
     ) {
         let arr = Array.from(entries).sort((a, b) => a[0] - b[0])
-        arr.forEach(result => {
+        for (const result of arr) {
             ctx.beginPath()
             result[1].fill.forEach(shape =>
                 this._drawShape[shape.type](shape, ctx)
@@ -278,7 +273,7 @@ class DrawEngine {
             )
             ctx.fill()
             ctx.stroke()
-        })
+        }
     }
 
     private _drawShape = {

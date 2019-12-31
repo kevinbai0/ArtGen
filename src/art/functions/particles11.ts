@@ -1,24 +1,10 @@
-import {
-    Lambda,
-    Shape,
-    DecoratedPoint,
-    DrawableFunction,
-    Injectables
-} from "../../types"
-import { unwrap as productionUnwrap, rgba as productionRGBA } from "../../utils"
+import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../../types"
 
-const particlesGen11: DrawableFunction = (
-    { unwrap, rgba }: Injectables = {
-        unwrap: productionUnwrap,
-        rgba: productionRGBA
-    }
-) => {
+const particlesGen11: DrawableFunction = ({ unwrap, rgba }) => {
     /**
      * Set up, initialize
      */
-    const point = Shape.point({
-        x: 0.1,
-        y: -0.1,
+    const point = Shape.point(0.1, -0.1, {
         fill: rgba(20, 0, unwrap([50, 255]), 1),
         radius: 1
     })

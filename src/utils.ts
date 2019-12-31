@@ -2,12 +2,12 @@ import { Range, RGBA, Value, Color } from "./types"
 
 export function updateShapes<T>(
     shapes: T[],
-    callback: (shape: T, index: number) => any
+    callback: (shape: T, index: number) => Partial<T>
 ) {
     shapes.forEach((shape, i) => {
         let obj = callback(shape, i)
         for (const key in obj) {
-            ;(shape as any)[key] = obj[key]
+            shape[key] = obj[key] as T[Extract<keyof T, string>]
         }
     })
 }
