@@ -1,11 +1,9 @@
-import { Lambda, Shape, DrawableFunction, Injectables } from "../../types"
+import { Lambda, DrawableFunction, GenPoint } from "../../types"
 import { generate, updateShapes } from "../../utils"
 
 const particlesGen2: DrawableFunction = ({ unwrap }) => {
     let points = generate(1000, i =>
-        Shape.point({
-            x: unwrap([-512, 512]),
-            y: unwrap([-512, 512]),
+        GenPoint([-512, 512], [-512, 512], {
             fill: `rgba(${(0 / 600) * 200},200,${200 * (1 - 0 / 600)},1)`,
             radius: 3,
             stateIndex: i

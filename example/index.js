@@ -1,7 +1,7 @@
 const artgen = document.getElementById("artgen")
 const { DrawEngine, art } = ArtGen
 
-let drawEngine = new DrawEngine(art.example, artgen)
+let drawEngine = new DrawEngine(art.particlesGen11, artgen)
 
 let lastN = []
 

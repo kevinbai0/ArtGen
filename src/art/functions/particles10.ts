@@ -1,14 +1,18 @@
-import { Lambda, Shape, DecoratedPoint, DrawableFunction } from "../../types"
+import {
+    Lambda,
+    Shape,
+    DecoratedPoint,
+    DrawableFunction,
+    GenPoint
+} from "../../types"
 import { generate } from "../../utils"
 
 const particlesGen10: DrawableFunction = ({ unwrap, rgba }) => {
     /**
      * Set up, initialize
      */
-    let points = generate(5, i =>
-        Shape.point({
-            x: unwrap([-100, 100]),
-            y: unwrap([-10, 10]),
+    let points = generate(5, _ =>
+        GenPoint([-100, 100], [-10, 10], {
             fill: rgba(20, 0, unwrap([50, 255]), 1),
             radius: 1
         })

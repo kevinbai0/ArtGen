@@ -2,24 +2,15 @@ import { Lambda, DrawableFunction, DecoratedPoint, GenPoint } from "../../types"
 import { generate } from "../../utils"
 
 const example: DrawableFunction = ({ unwrap, rgba }) => {
-    /** Helper functions */
+    /** define constants */
     const constants: [number, number, number, number] = [
-        /*unwrap([1, 3]),
-        unwrap([1, 3]),
-        unwrap([1, 3]),
-        unwrap([1, 3])*/
-        /*2.689602099316258,
+        2.689602099316258,
         2.711045926632344,
         2.0721756317448214,
-        1.1136017709074095*/
-        2.10000002,
-        2.10000002,
-        2.10000002,
-        2.10000002
+        1.1136017709074095
     ]
 
-    console.log(constants)
-
+    /** Functinos to calculate next iteration */
     const calcX = (x: number, y: number, c: typeof constants) =>
         Math.sin(3 * Math.sin(x) * Math.cos(c[0] * x - y * c[2])) +
         c[2] * Math.sin(0.3 * Math.cos(c[0] * x * c[3]))
@@ -28,7 +19,7 @@ const example: DrawableFunction = ({ unwrap, rgba }) => {
         c[3] * Math.sin((1 / Math.E) * c[1] * y)
 
     // our initial point
-    let points = generate(5, i =>
+    let points = generate(5, _ =>
         GenPoint([0, 0.1], [0, -0.1], { fill: rgba(0, 0, 0, 0.1), radius: 1 })
     )
 
