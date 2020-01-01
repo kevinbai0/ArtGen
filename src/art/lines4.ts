@@ -1,24 +1,23 @@
-import { Draw, Point, DrawableFunction } from "../../../src/types"
-import AnimatedLine from "../../../src/animated/AnimatedLine"
-import { generate, GenLine } from "../../../src/utils"
+import { Draw, Point, DrawableFunction } from "../types"
+import AnimatedLine from "../animated/AnimatedLine"
+import { generate, GenLine } from "../utils"
 
-const linesGen5: DrawableFunction = ({ unwrap, rgba }) => {
+const linesGen4: DrawableFunction = ({ unwrap, rgba }) => {
     const func = (theta: number, r: number): Point => {
         return {
-            x: r * Math.cos(theta),
-            y: r * Math.sin(2 * Math.cos(theta * Math.sqrt(2)))
+            x: -250 + r * (0.5 + Math.cos(theta * Math.sqrt(2))),
+            y: r * Math.sin(theta)
         }
     }
 
     const generateLine = (z: number) => {
-        const r = Math.floor(unwrap([5, 1000]))
+        const r = Math.floor(unwrap([5, 500]))
         const points = generate(Math.max(100, r * 2), i =>
             func((i / (r - 1)) * Math.PI, r)
         )
-        let color = Math.min(255, Math.round(Math.sqrt((r * r) / 6)))
         return new AnimatedLine(
             GenLine(points, {
-                stroke: rgba([50, 150], [200, 255], [color - 5, color], 1),
+                stroke: rgba([50, 150], [200, 255], [200, 255], 1),
                 zIndex: z,
                 lineWidth: 5
             })
@@ -29,12 +28,9 @@ const linesGen5: DrawableFunction = ({ unwrap, rgba }) => {
     let count = lines.size
 
     const draw: Draw = (x: number) => {
-        if (x < 400) {
-            const bound = x < 300 ? 1 : 2
-            for (let i = 0; i < bound; ++i) {
-                lines.set(count, generateLine(count))
-                count += 1
-            }
+        if (x % 2 === 0) {
+            lines.set(count, generateLine(count))
+            count += 1
         }
 
         lines.forEach((line, key) => {
@@ -54,4 +50,4 @@ const linesGen5: DrawableFunction = ({ unwrap, rgba }) => {
     }
 }
 
-export default linesGen5
+export default linesGen4

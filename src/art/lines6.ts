@@ -1,11 +1,6 @@
-import {
-    Draw,
-    Point,
-    DecoratedLine,
-    DrawableFunction
-} from "../../../src/types"
-import AnimatedLine from "../../../src/animated/AnimatedLine"
-import { generate, GenLine } from "../../../src/utils"
+import { Draw, Point, DecoratedLine, DrawableFunction } from "../types"
+import AnimatedLine from "../animated/AnimatedLine"
+import { generate, GenLine } from "../utils"
 
 const linesGen6: DrawableFunction = ({ unwrap, rgba }) => {
     const func = (theta: number, r: number): Point => {

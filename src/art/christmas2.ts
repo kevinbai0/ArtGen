@@ -1,10 +1,5 @@
-import { Draw, DrawableFunction } from "../../../src/types"
-import {
-    withOpacity,
-    generate,
-    updateShapes,
-    GenPoint
-} from "../../../src/utils"
+import { Draw, DrawableFunction } from "../types"
+import { withOpacity, generate, updateShapes, GenPoint } from "../utils"
 
 const christmasGen2: DrawableFunction = ({ unwrap, rgba }) => {
     const baseParticles = generate(1000, i => {

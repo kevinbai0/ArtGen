@@ -1,5 +1,5 @@
-import { Draw, DrawableFunction, Point } from "../../../src/types"
-import { GenLine } from "../../../src/utils"
+import { Draw, DrawableFunction, Point } from "../types"
+import { GenLine } from "../utils"
 
 const linesGen: DrawableFunction = ({ unwrap }) => {
     const draw: Draw = (x: number) => {

@@ -1,6 +1,6 @@
-import { Draw, RGBA, DrawableFunction } from "../../../src/types"
-import AnimatedPoint from "../../../src/animated/AnimatedPoint"
-import { generate, updateShapes, GenPoint } from "../../../src/utils"
+import { Draw, RGBA, DrawableFunction } from "../types"
+import AnimatedPoint from "../animated/AnimatedPoint"
+import { generate, updateShapes, GenPoint } from "../utils"
 
 const particlesGen8: DrawableFunction = ({ unwrap, rgba }) => {
     const baseParticles = generate(20, i => {

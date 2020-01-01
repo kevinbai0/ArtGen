@@ -1,5 +1,5 @@
-import { Draw, MultiRange, DrawableFunction } from "../../../src/types"
-import { GenPoint } from "../../../src/utils"
+import { Draw, MultiRange, DrawableFunction } from "../types"
+import { GenPoint } from "../utils"
 
 type MultiNumberRange = MultiRange<number>
 

@@ -1,6 +1,6 @@
-import { Draw, Value, DrawableFunction } from "../../../src/types"
-import AnimatedCircle from "../../../src/animated/AnimatedCircle"
-import { GenArc } from "../../../src/utils"
+import { Draw, Value, DrawableFunction } from "../types"
+import AnimatedCircle from "../animated/AnimatedCircle"
+import { GenArc } from "../utils"
 
 const circlesGen5: DrawableFunction = ({ unwrap }) => {
     const randomArc = (config: {

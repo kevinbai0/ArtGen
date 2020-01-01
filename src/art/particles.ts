@@ -1,5 +1,5 @@
-import { Draw, DecoratedPoint, DrawableFunction } from "../../../src/types"
-import { generate, updateShapes, GenPoint } from "../../../src/utils"
+import { Draw, DecoratedPoint, DrawableFunction } from "../types"
+import { generate, updateShapes, GenPoint } from "../utils"
 
 const particlesGen: DrawableFunction = ({ unwrap }) => {
     const len = 800

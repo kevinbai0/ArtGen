@@ -1,6 +1,6 @@
-import { Draw, Point, DrawableFunction } from "../../../src/types"
-import AnimatedLine from "../../../src/animated/AnimatedLine"
-import { generate, GenLine } from "../../../src/utils"
+import { Draw, Point, DrawableFunction } from "../types"
+import AnimatedLine from "../animated/AnimatedLine"
+import { generate, GenLine } from "../utils"
 
 const linesGen3: DrawableFunction = ({ unwrap }) => {
     const generateLine = (index: number, n: number, inverted: boolean) => {

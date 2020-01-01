@@ -1,6 +1,6 @@
-import { Draw, DrawableFunction } from "../../../src/types"
-import AnimatedCircle from "../../../src/animated/AnimatedCircle"
-import { GenArc } from "../../../src/utils"
+import { Draw, DrawableFunction } from "../types"
+import AnimatedCircle from "../animated/AnimatedCircle"
+import { GenArc } from "../utils"
 
 const circlesGen4: DrawableFunction = ({ unwrap }) => {
     const randomArc = (x: number, y: number, radius: number, key?: number) => {

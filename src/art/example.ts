@@ -1,5 +1,5 @@
-import { Draw, DrawableFunction, DecoratedPoint } from "../../../src/types"
-import { generate, GenPoint } from "../../../src/utils"
+import { Draw, DrawableFunction, DecoratedPoint } from "../types"
+import { generate, GenPoint } from "../utils"
 
 const example: DrawableFunction = ({ unwrap, rgba }) => {
     /** define constants */

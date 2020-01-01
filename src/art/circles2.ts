@@ -1,5 +1,5 @@
-import { Draw, DrawableFunction } from "../../../src/types"
-import { GenPoint } from "../../../src/utils"
+import { Draw, DrawableFunction } from "../types"
+import { GenPoint } from "../utils"
 
 const circlesGen2: DrawableFunction = ({ unwrap }) => {
     const stroke = (x: number) => {

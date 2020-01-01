@@ -1,7 +1,4 @@
 import { DecoratedShape, Modifiable } from "../types"
-import AnimatedPoint from "./AnimatedPoint"
-import AnimatedLine from "./AnimatedLine"
-import AnimatedCircle from "./AnimatedCircle"
 
 class Animated<T extends DecoratedShape & Modifiable<T>> {
     protected _percentage: number
@@ -43,4 +40,4 @@ class Animated<T extends DecoratedShape & Modifiable<T>> {
     }
 }
 
-export { Animated, AnimatedCircle, AnimatedLine, AnimatedPoint }
+export default Animated
