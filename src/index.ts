@@ -1,18 +1,6 @@
 import DrawEngine from "./drawing/DrawEngine"
-import Animated from "./animations/Animated"
-import AnimatedPoint from "./animations/AnimatedPoint"
-import AnimatedLine from "./animations/AnimatedLine"
-import AnimatedCircle from "./animations/AnimatedCircle"
 
-import * as art from "./art"
 import * as utils from "./utils"
+import * as Animated from "./animated"
 
-export {
-    art,
-    DrawEngine,
-    utils,
-    Animated,
-    AnimatedLine,
-    AnimatedPoint,
-    AnimatedCircle
-}
+export { DrawEngine, utils, Animated }

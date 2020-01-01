@@ -5,11 +5,12 @@ import {
     Range,
     DecoratedArc,
     Value,
+    DrawableFunction,
     DrawableFunctionConfig
 } from "../types"
 
 import VirtualCanvas from "./VirtualCanvas"
-import { unwrap, unwrapColor } from "../utils"
+import { unwrap, unwrapColor, rgba } from "../utils"
 
 type Separation = {
     fill: DecoratedShape[]
@@ -27,19 +28,19 @@ class TimeTracker {
         this._start = 0
     }
 
-    start() {
+    start(): void {
         this._entries.clear()
         this._start = performance.now()
         this._entries.set("_start", this._start)
     }
 
-    addBreakpoint(name: string) {
+    addBreakpoint(name: string): void {
         this._entries.set(name, performance.now())
     }
 
-    output() {
-        let end = performance.now()
-        let arr = Array.from(this._entries)
+    output(): string {
+        const end = performance.now()
+        const arr = Array.from(this._entries)
         return `${arr
             .map(
                 (time, i) =>
@@ -54,25 +55,50 @@ class TimeTracker {
         `
     }
 
-    timeLapsed() {
+    timeLapsed(): number {
         return performance.now() - this._start
     }
+}
+
+function bounded(num: number, lower: number, upper: number): number {
+    return Math.min(Math.max(num, lower), upper)
+}
+
+function getRange(
+    range: Range<number | string>,
+    length: number
+): Range<number> {
+    if (typeof range[0] === "string") {
+        const newRange: Range<number> = [
+            parseFloat(range[0]) / 100.0,
+            parseFloat(range[1] as string) / 100.0
+        ]
+        if (isNaN(newRange[0]) || isNaN(newRange[1])) return [0, length - 1]
+        return [
+            Math.round(bounded(newRange[0], 0, 1) * (length - 1)),
+            Math.round(bounded(newRange[1], 0, 1) * (length - 1))
+        ]
+    }
+    const numRange = range as Range<number>
+    return [
+        bounded(numRange[0], 0, length - 1),
+        bounded(numRange[1], 0, length - 1)
+    ]
 }
 
 class DrawEngine {
     private _virtualCanvas: VirtualCanvas
     private _ctx: CanvasRenderingContext2D | null
     private _backgroundCtx: CanvasRenderingContext2D | null
-    private _DrawableFunctionConfig: DrawableFunctionConfig
-    private _startTime: number = 0
-    private _prevTime: number = 0
-    private _iterationCount: number = 0
-    private _unchangedState: Map<number, Separation>
+    private _drawableFunctionConfig: DrawableFunctionConfig
+    private _startTime = 0
+    private _prevTime = 0
+    private _iterationCount = 0
     private _state: Map<number, DecoratedShape>
     private _timeTracker: TimeTracker
 
-    constructor(fun: DrawableFunctionConfig, container: HTMLDivElement) {
-        this._DrawableFunctionConfig = fun
+    constructor(fun: DrawableFunction, container: HTMLDivElement) {
+        this._drawableFunctionConfig = fun({ unwrap, rgba })
         // normalizing to square canvas
         const artboard = document.createElement("canvas")
         artboard.className = "artgen-canvas"
@@ -95,13 +121,12 @@ class DrawEngine {
         this._ctx = artboard.getContext("2d")
         this._backgroundCtx = backgroundArtboard.getContext("2d")
         this._state = new Map<number, DecoratedShape>()
-        this._unchangedState = new Map<number, Separation>()
 
         this._startTime = 0
         this._timeTracker = new TimeTracker()
     }
 
-    private _style(artboard: HTMLElement) {
+    private _style(artboard: HTMLElement): void {
         artboard.style.position = "absolute"
         artboard.style.left = "0"
         artboard.style.top = "0"
@@ -112,7 +137,7 @@ class DrawEngine {
     /**
      * Start the animation
      */
-    start() {
+    start(): void {
         if (!this._ctx || !this._backgroundCtx) return
         this._startTime = performance.now()
 
@@ -120,13 +145,13 @@ class DrawEngine {
         this._state = new Map<number, DecoratedShape>()
         this._iterationCount = 0
 
-        this._unchangedState = new Map<number, Separation>()
-
         requestAnimationFrame(() =>
             this._draw(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this._ctx!,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this._backgroundCtx!,
-                this._DrawableFunctionConfig,
+                this._drawableFunctionConfig,
                 0
             )
         )
@@ -142,11 +167,10 @@ class DrawEngine {
         x: number
     ): void => {
         this._timeTracker.start()
-
-        const funResult = fun.lambda(x, this._iterationCount)
+        const funResult = fun.draw(x, this._iterationCount)
         this._timeTracker.addBreakpoint("calculate")
 
-        const next = () =>
+        const next = (): void =>
             this._iterate(x, fun, newX => {
                 this._draw(ctx, backgroundCtx, fun, newX)
             })
@@ -154,7 +178,7 @@ class DrawEngine {
         function addToIndexedSeparationMap(
             shape: DecoratedShape,
             acc: IndexedSeparationMap
-        ) {
+        ): void {
             if (!acc.get(shape.zIndex))
                 acc.set(shape.zIndex, {
                     fill: [],
@@ -162,8 +186,11 @@ class DrawEngine {
                     fillAndStroke: []
                 })
             if (shape.fill && shape.stroke)
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 acc.get(shape.zIndex)!.fillAndStroke.push(shape)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             else if (shape.fill) acc.get(shape.zIndex)!.fill.push(shape)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             else if (shape.stroke) acc.get(shape.zIndex)!.stroke.push(shape)
         }
 
@@ -171,7 +198,6 @@ class DrawEngine {
         const states = funResult.reduce(
             (accum, shape) => {
                 if (shape.stateIndex === undefined) {
-                    addToIndexedSeparationMap(shape, this._unchangedState)
                     addToIndexedSeparationMap(shape, accum.staticState)
                     return accum
                 }
@@ -215,7 +241,7 @@ class DrawEngine {
         this._timeTracker.addBreakpoint("render static")
 
         // 3) Redraw elements from newly updated state
-        let stateMap = Array.from(this._state.entries()).reduce(
+        const stateMap = Array.from(this._state.entries()).reduce(
             (accum, entry) => {
                 addToIndexedSeparationMap(entry[1], accum)
                 return accum
@@ -236,7 +262,7 @@ class DrawEngine {
         currentX: number,
         fun: DrawableFunctionConfig,
         next: (x: number) => void
-    ) {
+    ): void {
         const currentTime = performance.now()
         const runningTime = currentTime - this._startTime
 
@@ -249,7 +275,7 @@ class DrawEngine {
         this._prevTime = currentTime
         this._iterationCount += 1
 
-        return void requestAnimationFrame(_ =>
+        return void requestAnimationFrame(() =>
             next(fun.iterate(currentX, runningTime))
         )
     }
@@ -257,9 +283,9 @@ class DrawEngine {
     private _render(
         ctx: CanvasRenderingContext2D,
         entries: IterableIterator<[number, Separation]>
-    ) {
-        let arr = Array.from(entries).sort((a, b) => a[0] - b[0])
-        arr.forEach(result => {
+    ): void {
+        const arr = Array.from(entries).sort((a, b) => a[0] - b[0])
+        for (const result of arr) {
             ctx.beginPath()
             result[1].fill.forEach(shape =>
                 this._drawShape[shape.type](shape, ctx)
@@ -278,14 +304,14 @@ class DrawEngine {
             )
             ctx.fill()
             ctx.stroke()
-        })
+        }
     }
 
     private _drawShape = {
         prevFill: "",
         prevStroke: "",
         prevLineWidth: 1 as Value,
-        point: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
+        point: (shape: DecoratedShape, ctx: CanvasRenderingContext2D): void => {
             const point = shape as DecoratedPoint
             const transformed = this._virtualCanvas.transformPointToCanvas(
                 point
@@ -314,9 +340,9 @@ class DrawEngine {
             ctx.moveTo(x + r, y)
             ctx.ellipse(x, y, r, r, 0, 0, 2 * Math.PI)
         },
-        line: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
+        line: (shape: DecoratedShape, ctx: CanvasRenderingContext2D): void => {
             const line = shape as DecoratedLine
-            let range = getRange(line.range, line.points.length)
+            const range = getRange(line.range, line.points.length)
 
             if (this._drawShape.prevStroke !== line.stroke) {
                 ctx.strokeStyle = unwrapColor(line.stroke || "")
@@ -344,7 +370,7 @@ class DrawEngine {
                 ctx.lineTo(unwrap(transformed.x), unwrap(transformed.y))
             }
         },
-        arc: (shape: DecoratedShape, ctx: CanvasRenderingContext2D) => {
+        arc: (shape: DecoratedShape, ctx: CanvasRenderingContext2D): void => {
             const arc = shape as DecoratedArc
             const transformed = this._virtualCanvas.transformPointToCanvas(arc)
             const r = this._virtualCanvas.transformDimensionToCanvas(arc.radius) // get radius from function
@@ -381,33 +407,8 @@ class DrawEngine {
     /**
      * Override to get real time fps and duration updates
      */
-    public dataListener = (fps: number, runningTime: number) => {}
-}
-
-function getRange(
-    range: Range<number | string>,
-    length: number
-): Range<number> {
-    if (typeof range[0] === "string") {
-        const newRange: Range<number> = [
-            parseFloat(range[0]) / 100.0,
-            parseFloat(range[1] as string) / 100.0
-        ]
-        if (isNaN(newRange[0]) || isNaN(newRange[1])) return [0, length - 1]
-        return [
-            Math.round(bounded(newRange[0], 0, 1) * (length - 1)),
-            Math.round(bounded(newRange[1], 0, 1) * (length - 1))
-        ]
-    }
-    const numRange = range as Range<number>
-    return [
-        bounded(numRange[0], 0, length - 1),
-        bounded(numRange[1], 0, length - 1)
-    ]
-}
-
-function bounded(num: number, lower: number, upper: number) {
-    return Math.min(Math.max(num, lower), upper)
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+    public dataListener = (fps: number, runningTime: number): void => {}
 }
 
 export default DrawEngine

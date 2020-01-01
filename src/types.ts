@@ -20,13 +20,13 @@ export interface ShapeStyles {
     stroke?: Color
 }
 
-export interface OrderStyle {
-    zIndex?: number
-    stateIndex?: number
+export interface Modifiable<T> {
+    readonly clone: (key?: Partial<T>) => T
+    readonly mutate: (key?: Partial<T>) => T
 }
 
 export interface DecoratedShape extends ShapeStyles {
-    type: ShapeType
+    readonly type: ShapeType
     zIndex: number
     stateIndex?: number
 }
@@ -42,11 +42,10 @@ export interface PointStyles extends ShapeStyles {
 
 export interface DecoratedPoint
     extends Point,
+        Modifiable<DecoratedPoint>,
         PointStyles,
-        DecoratedShape,
-        LineStyles {
-    type: ShapeType.point
-}
+        LineStyles,
+        DecoratedShape {}
 
 export interface Line {
     points: Point[]
@@ -56,8 +55,11 @@ export interface LineStyles extends ShapeStyles {
     lineWidth?: Value
 }
 
-export interface DecoratedLine extends Line, LineStyles, DecoratedShape {
-    type: ShapeType.line
+export interface DecoratedLine
+    extends Line,
+        LineStyles,
+        DecoratedShape,
+        Modifiable<DecoratedLine> {
     range: Range<number | string>
 }
 
@@ -69,66 +71,29 @@ export interface Arc {
     radius: Value
 }
 
-export interface ArcStyles extends ShapeStyles {}
+export type ArcStyles = ShapeStyles
 
 export interface DecoratedArc
     extends Arc,
         ArcStyles,
         DecoratedShape,
+        Modifiable<DecoratedArc>,
         LineStyles {
-    type: ShapeType.arc
     direction: "clockwise" | "counter-clockwise"
 }
 
-interface PointConstructor extends Point, PointStyles, OrderStyle, LineStyles {}
-interface LineConstructor extends Line, LineStyles, OrderStyle {
-    range?: Range<number | string>
-}
-interface ArcConstructor extends Arc, ArcStyles, OrderStyle, LineStyles {
-    direction?: "clockwise" | "counter-clockwise"
-}
-
-export const Shape = {
-    point: (point: PointConstructor): DecoratedPoint => {
-        return {
-            ...point,
-            type: ShapeType.point,
-            zIndex: point.zIndex || 0,
-            ...(point.stateIndex && { stateIndex: point.stateIndex })
-        }
-    },
-    line: (line: LineConstructor): DecoratedLine => {
-        return {
-            ...line,
-            range: line.range || ["0%", "100%"],
-            type: ShapeType.line,
-            zIndex: line.zIndex || 0,
-            ...(line.stateIndex && { stateIndex: line.stateIndex })
-        }
-    },
-    arc: (arc: ArcConstructor): DecoratedArc => {
-        return {
-            ...arc,
-            type: ShapeType.arc,
-            zIndex: arc.zIndex || 0,
-            ...(arc.stateIndex && { stateIndex: arc.stateIndex }),
-            direction: arc.direction || "clockwise"
-        }
-    }
-}
-
-export type Lambda = (x: number, count: number) => DecoratedShape[]
+export type Draw = (x: number, count: number) => DecoratedShape[]
 
 /**
  * On Iteration
  */
-export interface LambdaConfig {
+export interface DrawConfig {
     iterate(prevX: number, timeLapsed: number): number
     endIf(duration: number, x: number): boolean
 }
 
-export interface DrawableFunctionConfig extends LambdaConfig {
-    lambda: Lambda
+export interface DrawableFunctionConfig extends DrawConfig {
+    draw: Draw
 }
 
 export interface Injectables {
@@ -136,7 +101,7 @@ export interface Injectables {
     rgba: typeof rgba
 }
 
-export type DrawableFunction = (modules?: Injectables) => DrawableFunctionConfig
+export type DrawableFunction = (modules: Injectables) => DrawableFunctionConfig
 
 export type Range<T> = [T, T]
 export type MultiRange<T> = Range<T> | Array<Range<T>>

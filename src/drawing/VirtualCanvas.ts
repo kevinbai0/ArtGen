@@ -3,11 +3,11 @@ import { unwrap } from "../utils"
 
 class VirtualCanvas {
     // canvas representation of a cartesian grid with 1024 width, 1024 height, and no
-    get width() {
+    get width(): number {
         return 1024.0
     }
 
-    get height() {
+    get height(): number {
         return 1024.0
     }
 
@@ -21,16 +21,15 @@ class VirtualCanvas {
 
     transformPointToCanvas = (point: Point): Point => {
         // raw: 0,0 is in the top left
-        let maxScale = Math.max(this._scaleX, this._scaleY)
+        const maxScale = Math.max(this._scaleX, this._scaleY)
         return {
-            ...point,
             x: (unwrap(point.x) + this.width / 2) * maxScale,
             y: (this.height / 2 - unwrap(point.y)) * maxScale
         }
     }
 
     transformDimensionToCanvas = (value: Value): number => {
-        let maxScale = Math.max(this._scaleX, this._scaleY)
+        const maxScale = Math.max(this._scaleX, this._scaleY)
         return maxScale * unwrap(value)
     }
 }
