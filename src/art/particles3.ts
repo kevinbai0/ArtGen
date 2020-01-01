@@ -3,7 +3,7 @@ import { generate, updateShapes, GenPoint } from "../utils"
 
 const particlesGen3: DrawableFunction = ({ unwrap, rgba }) => {
     let points = generate(500, i => {
-        let th = (i / 500) * 2 * Math.PI
+        const th = (i / 500) * 2 * Math.PI
         return GenPoint(Math.cos(th) * 50, Math.sin(th) * 50 - 300, {
             fill: "rgba(0,0,0,1)",
             radius: 2
@@ -11,7 +11,7 @@ const particlesGen3: DrawableFunction = ({ unwrap, rgba }) => {
     })
     points = points.concat(
         generate(500, i => {
-            let th = (i / 500) * 2 * Math.PI
+            const th = (i / 500) * 2 * Math.PI
             return GenPoint(Math.cos(th) * 50 - 350, Math.sin(th) * 50 - 200, {
                 fill: "rgba(0,0,0,1)",
                 radius: 2
@@ -20,7 +20,7 @@ const particlesGen3: DrawableFunction = ({ unwrap, rgba }) => {
     )
     points = points.concat(
         generate(500, i => {
-            let th = (i / 500) * 2 * Math.PI
+            const th = (i / 500) * 2 * Math.PI
             return GenPoint(Math.cos(th) * 50 + 350, Math.sin(th) * 50 - 200, {
                 fill: "rgba(0,0,0,1)",
                 radius: 2

@@ -2,18 +2,18 @@ import { DecoratedShape, Modifiable } from "../types"
 
 class Animated<T extends DecoratedShape & Modifiable<T>> {
     protected _percentage: number
-    protected _ended: boolean = false
+    protected _ended = false
     protected _delay: number
 
     protected _shape: T
 
-    get ended() {
+    get ended(): boolean {
         return this._ended
     }
-    get percentage() {
+    get percentage(): number {
         return this._percentage
     }
-    get shape() {
+    get shape(): T {
         return this._shape
     }
 
@@ -23,10 +23,12 @@ class Animated<T extends DecoratedShape & Modifiable<T>> {
         this._shape = config
     }
 
-    willUpdate(newValue: number, value: number) {}
-    didUpdate(value: number, oldValue: number) {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+    willUpdate(newValue: number, value: number): void {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+    didUpdate(value: number, oldValue: number): void {}
 
-    update(delta: number) {
+    update(delta: number): T {
         if (this._delay > 0) {
             this._delay -= 1
             return this.shape.clone()

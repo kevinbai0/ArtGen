@@ -15,7 +15,7 @@ const linesGen5: DrawableFunction = ({ unwrap, rgba }) => {
         const points = generate(Math.max(100, r * 2), i =>
             func((i / (r - 1)) * Math.PI, r)
         )
-        let color = Math.min(255, Math.round(Math.sqrt((r * r) / 6)))
+        const color = Math.min(255, Math.round(Math.sqrt((r * r) / 6)))
         return new AnimatedLine(
             GenLine(points, {
                 stroke: rgba([50, 150], [200, 255], [color - 5, color], 1),
@@ -24,7 +24,7 @@ const linesGen5: DrawableFunction = ({ unwrap, rgba }) => {
             })
         )
     }
-    let lines = new Map<number, AnimatedLine>()
+    const lines = new Map<number, AnimatedLine>()
     lines.set(0, generateLine(0))
     let count = lines.size
 

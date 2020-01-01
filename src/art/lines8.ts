@@ -1,19 +1,12 @@
 import { Draw, Point, DecoratedLine, DrawableFunction } from "../types"
 import AnimatedLine from "../animated/AnimatedLine"
-import { generate, GenPoint, GenLine } from "../utils"
+import { generate, GenLine } from "../utils"
 
 const linesGen8: DrawableFunction = ({ unwrap, rgba }) => {
     const eq1 = (theta: number, r: number): Point => {
         return {
             x: r * Math.cos(theta * unwrap([0.19, 0.21])),
             y: r * Math.sin(theta * Math.sqrt(unwrap([1.9, 2.0])))
-        }
-    }
-
-    const eq2 = (theta: number, r: number): Point => {
-        return {
-            x: r * Math.cos(Math.sqrt(2) * theta),
-            y: r * Math.sin(theta)
         }
     }
 
@@ -40,11 +33,11 @@ const linesGen8: DrawableFunction = ({ unwrap, rgba }) => {
             })
         )
     }
-    let lines = new Map<number, AnimatedLine>()
+    const lines = new Map<number, AnimatedLine>()
     lines.set(0, generateLine(0, eq1))
     let counter = lines.size
 
-    let ended: DecoratedLine[] = []
+    const ended: DecoratedLine[] = []
 
     const draw: Draw = (x: number, count: number) => {
         if (count % 2 === 0) {

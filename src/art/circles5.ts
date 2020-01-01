@@ -21,7 +21,7 @@ const circlesGen5: DrawableFunction = ({ unwrap }) => {
     const minRadius = 300
     const maxRadius = 350
     const maxEdge = 400
-    let circles = new Map<number, AnimatedCircle>()
+    const circles = new Map<number, AnimatedCircle>()
     // top left
     const calc = (key: number) => ({
         radius: unwrap([minRadius, maxRadius]),
@@ -151,7 +151,7 @@ const circlesGen5: DrawableFunction = ({ unwrap }) => {
 
     let circlesCount = circles.size
 
-    const draw: Draw = (x: number) => {
+    const draw: Draw = () => {
         circles.forEach((circle, key) => {
             if (!circle.ended) return
             circles.delete(key)

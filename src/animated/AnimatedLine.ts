@@ -1,5 +1,5 @@
-import { DecoratedArc, DecoratedLine } from "../types"
-import { Animated } from "./Animated"
+import { DecoratedLine } from "../types"
+import Animated from "./Animated"
 
 class AnimatedLine extends Animated<DecoratedLine> {
     constructor(config: DecoratedLine, delay?: number) {
@@ -7,7 +7,7 @@ class AnimatedLine extends Animated<DecoratedLine> {
         this._shape.range = ["0%", "0%"]
     }
 
-    willUpdate(newValue: number, value: number) {
+    willUpdate(newValue: number, value: number): DecoratedLine {
         this._shape.range = [`${value * 100 - 1.1}%`, `${newValue * 100}%`]
         return this._shape
     }

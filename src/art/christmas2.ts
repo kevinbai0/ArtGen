@@ -3,7 +3,7 @@ import { withOpacity, generate, updateShapes, GenPoint } from "../utils"
 
 const christmasGen2: DrawableFunction = ({ unwrap, rgba }) => {
     const baseParticles = generate(1000, i => {
-        let randRed = unwrap([
+        const randRed = unwrap([
             [255, 220],
             [0, 10]
         ])
@@ -36,8 +36,7 @@ const christmasGen2: DrawableFunction = ({ unwrap, rgba }) => {
         })
         if (x >= 100) {
             updateShapes(baseParticles, (shape, i) => {
-                let r = x
-                let th = ((initPositions[i].direction ? 1 : -1) * x) / 10
+                const th = ((initPositions[i].direction ? 1 : -1) * x) / 10
                 return {
                     x:
                         unwrap(initPositions[i].x) +
@@ -55,8 +54,8 @@ const christmasGen2: DrawableFunction = ({ unwrap, rgba }) => {
 
     return {
         draw,
-        iterate: x => x + 1,
-        endIf: duration => duration >= 10000
+        iterate: (x): number => x + 1,
+        endIf: (duration): boolean => duration >= 10000
     }
 }
 

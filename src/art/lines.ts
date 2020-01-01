@@ -1,7 +1,7 @@
 import { Draw, DrawableFunction, Point } from "../types"
 import { GenLine } from "../utils"
 
-const linesGen: DrawableFunction = ({ unwrap }) => {
+const linesGen: DrawableFunction = () => {
     const draw: Draw = (x: number) => {
         const points: Point[] = [
             {

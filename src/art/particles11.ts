@@ -21,8 +21,8 @@ const particlesGen11: DrawableFunction = ({ unwrap, rgba }) => {
 
     console.log(a, b, c, d)
 
-    const draw: Draw = (t: number, count) => {
-        let newPoints: DecoratedPoint[] = []
+    const draw: Draw = () => {
+        const newPoints: DecoratedPoint[] = []
 
         for (let i = 0; i < 1000; ++i) {
             const x = unwrap(point.x)
@@ -55,7 +55,7 @@ const particlesGen11: DrawableFunction = ({ unwrap, rgba }) => {
     return {
         draw,
         iterate: x => x + 2,
-        endIf: (duration: number, x: number) => duration >= 10000
+        endIf: duration => duration >= 10000
     }
 }
 

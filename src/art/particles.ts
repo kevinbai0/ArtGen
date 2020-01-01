@@ -4,7 +4,7 @@ import { generate, updateShapes, GenPoint } from "../utils"
 const particlesGen: DrawableFunction = ({ unwrap }) => {
     const len = 800
     const radius = 400
-    let particles: DecoratedPoint[] = generate(len, i => {
+    const particles: DecoratedPoint[] = generate(len, i => {
         const theta = (i / len) * Math.PI
         if (i == 0)
             return GenPoint(radius, 0, {
@@ -30,7 +30,7 @@ const particlesGen: DrawableFunction = ({ unwrap }) => {
 
     const len2 = 500
     const radius2 = 150
-    let particles2 = generate(len2, i => {
+    const particles2 = generate(len2, i => {
         const theta = (i / len2) * Math.PI
         if (i == 0)
             return GenPoint(radius2, 0, {

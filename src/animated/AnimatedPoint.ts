@@ -1,5 +1,5 @@
 import { DecoratedPoint, RGBA } from "../types"
-import { Animated } from "./Animated"
+import Animated from "./Animated"
 
 class AnimatedPoint extends Animated<DecoratedPoint> {
     constructor(config: DecoratedPoint, delay?: number) {
@@ -13,7 +13,7 @@ class AnimatedPoint extends Animated<DecoratedPoint> {
         }
     }
 
-    willUpdate(newValue: number, value: number) {
+    willUpdate(newValue: number): DecoratedPoint {
         if ((this._shape.fill as RGBA).r && (this._shape.stroke as RGBA)) {
             ;(this._shape.fill as RGBA).a = newValue * 0.001
             ;(this._shape.stroke as RGBA).a = newValue * 0.05

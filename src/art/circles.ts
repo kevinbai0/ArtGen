@@ -16,17 +16,29 @@ export interface CirclesConfig {
 const circleArtGenerator = (config?: CirclesConfig): DrawableFunction => ({
     unwrap
 }) => {
-    let rangeR = (config && config.colorRange && config.colorRange.r) || [0, 0]
-    let rangeG = (config && config.colorRange && config.colorRange.g) || [0, 0]
-    let rangeB = (config && config.colorRange && config.colorRange.b) || [0, 0]
-    let rangeA = (config && config.colorRange && config.colorRange.a) || [1, 1]
+    const rangeR = (config && config.colorRange && config.colorRange.r) || [
+        0,
+        0
+    ]
+    const rangeG = (config && config.colorRange && config.colorRange.g) || [
+        0,
+        0
+    ]
+    const rangeB = (config && config.colorRange && config.colorRange.b) || [
+        0,
+        0
+    ]
+    const rangeA = (config && config.colorRange && config.colorRange.a) || [
+        1,
+        1
+    ]
 
     const colorRandomizer = (
         r: MultiNumberRange = rangeR,
         g: MultiNumberRange = rangeG,
         b: MultiNumberRange = rangeB,
         a: MultiNumberRange = rangeA
-    ) => {
+    ): string => {
         return `
             rgba(${unwrap(r)}, ${unwrap(g)},
                 ${unwrap(b)}, ${unwrap(a)})
@@ -35,17 +47,17 @@ const circleArtGenerator = (config?: CirclesConfig): DrawableFunction => ({
 
     const radiusRandomizer = (
         r: MultiNumberRange = (config && config.radius) || [5, 5]
-    ) => {
+    ): number => {
         return unwrap(r)
     }
     const circles: Draw = (x: number) => {
-        let r = x
-        let points = []
+        const r = x
+        const points = []
         let max = 4 * r
         if (max < 5) max = 5
         for (let i = 0; i < max; ++i) {
-            let y = unwrap([-r, r])
-            let newX =
+            const y = unwrap([-r, r])
+            const newX =
                 (unwrap([0, 1]) > 0.5 ? -1 : 1) * Math.sqrt(r * r - y * y)
 
             points.push(
@@ -59,8 +71,8 @@ const circleArtGenerator = (config?: CirclesConfig): DrawableFunction => ({
     }
     return {
         draw: circles,
-        iterate: x => x + 0.1,
-        endIf: duration => duration >= 10000
+        iterate: (x): number => x + 0.1,
+        endIf: (duration): boolean => duration >= 10000
     }
 }
 

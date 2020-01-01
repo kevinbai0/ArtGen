@@ -71,7 +71,7 @@ export interface Arc {
     radius: Value
 }
 
-export interface ArcStyles extends ShapeStyles {}
+export type ArcStyles = ShapeStyles
 
 export interface DecoratedArc
     extends Arc,

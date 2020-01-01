@@ -5,7 +5,7 @@ const particlesGen9: DrawableFunction = ({ unwrap, rgba }) => {
     /**
      * Set up, initialize
      */
-    let point = GenPoint(1, 1, {
+    const point = GenPoint(1, 1, {
         fill: rgba(20, 0, unwrap([50, 255]), 0.1),
         radius: 2
     })
@@ -16,8 +16,8 @@ const particlesGen9: DrawableFunction = ({ unwrap, rgba }) => {
      * Create Draw (takes in number, outputs shapes)
      */
 
-    const draw: Draw = (_: number) => {
-        let newPoints: DecoratedPoint[] = []
+    const draw: Draw = () => {
+        const newPoints: DecoratedPoint[] = []
 
         for (let i = 0; i < 800; ++i) {
             const x = unwrap(point.x)
@@ -43,8 +43,8 @@ const particlesGen9: DrawableFunction = ({ unwrap, rgba }) => {
 
     return {
         draw,
-        iterate: _ => 0,
-        endIf: (duration: number, x: number) => duration >= 10000
+        iterate: () => 0,
+        endIf: duration => duration >= 10000
     }
 }
 

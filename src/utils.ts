@@ -13,17 +13,41 @@ import {
 export function updateShapes<T>(
     shapes: T[],
     callback: (shape: T, index: number) => Partial<T>
-) {
+): void {
     shapes.forEach((shape, i) => {
-        let obj = callback(shape, i)
+        const obj = callback(shape, i)
         for (const key in obj) {
             shape[key] = obj[key] as T[Extract<keyof T, string>]
         }
     })
 }
 
-export function generate<T>(count: number, callback: (index: number) => T) {
+export function generate<T>(
+    count: number,
+    callback: (index: number) => T
+): T[] {
     return [...Array(count)].map((_, i) => callback(i))
+}
+
+export const unwrap = (num: Value): number => {
+    if (typeof num === "number") return num
+    if (typeof num[0] !== "number") {
+        const newRange = num as Array<Range<number>>
+        const rI = Math.floor(Math.random() * num.length)
+        return (
+            Math.random() * (newRange[rI][1] - newRange[rI][0]) +
+            newRange[rI][0]
+        )
+    }
+    const newRange = num as Range<number>
+    return Math.random() * (newRange[1] - newRange[0]) + newRange[0]
+}
+
+export const unwrapColor = (color: Color): string => {
+    if (typeof color === "string") return color
+    return `rgba(${unwrap(color.r)}, ${unwrap(color.g)}, ${unwrap(
+        color.b
+    )}, ${unwrap(color.a)})`
 }
 
 export const rgba = (r: Value, g: Value, b: Value, a: Value): Color => {
@@ -35,32 +59,27 @@ export const rgba = (r: Value, g: Value, b: Value, a: Value): Color => {
     }
 }
 
-export const unwrap = (num: Value): number => {
-    if (typeof num === "number") return num
-    if (typeof num[0] !== "number") {
-        const newRange = num as Array<Range<number>>
-        let rI = Math.floor(Math.random() * num.length)
-        return (
-            Math.random() * (newRange[rI][1] - newRange[rI][0]) +
-            newRange[rI][0]
-        )
-    }
-    const newRange = num as Range<number>
-    return Math.random() * (newRange[1] - newRange[0]) + newRange[0]
-}
-
-export const unwrapColor = (color: Color) => {
-    if (typeof color === "string") return color
-    return `rgba(${unwrap(color.r)}, ${unwrap(color.g)}, ${unwrap(
-        color.b
-    )}, ${unwrap(color.a)})`
-}
-
 export const withOpacity = (opacity: Value, color?: Color): Color => {
     if (!color) return ""
     if (typeof color === "string") return color
     const rgb = color as RGBA
     return rgba(rgb.r, rgb.g, rgb.b, opacity)
+}
+
+function clone<T>(obj: T, keys?: Partial<T>): T {
+    const copy = Object.assign({}, obj) as T
+    for (const key in keys) {
+        copy[key] = keys[key] as T[Extract<keyof T, string>]
+    }
+    return copy
+}
+
+function mutate<T>(obj: T, keys?: Partial<T>): T {
+    if (!keys) return obj
+    for (const key in keys) {
+        obj[key] = keys[key] as T[Extract<keyof T, string>]
+    }
+    return obj
 }
 
 const defaultPoint: DecoratedPoint = {
@@ -104,22 +123,6 @@ const defaultArc: DecoratedArc = {
     mutate(keys) {
         return clone(this, keys)
     }
-}
-
-function clone<T>(obj: T, keys?: Partial<T>) {
-    const copy = Object.assign({}, obj) as T
-    for (const key in keys) {
-        copy[key] = keys[key] as T[Extract<keyof T, string>]
-    }
-    return copy
-}
-
-function mutate<T>(obj: T, keys?: Partial<T>) {
-    if (!keys) return obj
-    for (const key in keys) {
-        obj[key] = keys[key] as T[Extract<keyof T, string>]
-    }
-    return obj
 }
 
 export function GenPoint(

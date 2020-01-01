@@ -17,14 +17,13 @@ const linesGen6: DrawableFunction = ({ unwrap, rgba }) => {
 
     const generateLine = (z: number) => {
         const rand = Math.floor(unwrap([0, options.length]))
-        let r = options[rand]
+        const r = options[rand]
         options = options.filter((option, i) => i !== rand)
         const max = Math.max(50, r * 2)
         const start = Math.floor(unwrap([0, max]))
         const points = generate(max, i =>
             func(((start + i) / (max - 1)) * 2 * Math.PI, r)
         )
-        let color = Math.min(255, Math.round(Math.sqrt((r * r) / 6)))
         const shade = unwrap([0, 150])
         return new AnimatedLine(
             GenLine(points, {
@@ -34,11 +33,11 @@ const linesGen6: DrawableFunction = ({ unwrap, rgba }) => {
             })
         )
     }
-    let lines = new Map<number, AnimatedLine>()
+    const lines = new Map<number, AnimatedLine>()
     lines.set(0, generateLine(0))
     let count = lines.size
 
-    let ended: DecoratedLine[] = []
+    const ended: DecoratedLine[] = []
 
     const draw: Draw = x => {
         if (x < 300) {

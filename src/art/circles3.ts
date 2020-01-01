@@ -28,7 +28,7 @@ const circlesGen3: DrawableFunction = () => {
             )
         ]
 
-        let radius = Math.max(normalized, 0) * 800
+        const radius = Math.max(normalized, 0) * 800
         const edgeCircles = [
             GenPoint(shifted - 512, 512 + (radius * 3) / 4, {
                 radius,

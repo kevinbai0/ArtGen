@@ -23,7 +23,7 @@ const linesGen4: DrawableFunction = ({ unwrap, rgba }) => {
             })
         )
     }
-    let lines = new Map<number, AnimatedLine>()
+    const lines = new Map<number, AnimatedLine>()
     lines.set(0, generateLine(0))
     let count = lines.size
 

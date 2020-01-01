@@ -10,13 +10,6 @@ const linesGen7: DrawableFunction = ({ unwrap, rgba }) => {
         }
     }
 
-    const eq2 = (theta: number, r: number): Point => {
-        return {
-            x: r * Math.cos(Math.sqrt(2) * theta),
-            y: r * Math.sin(theta)
-        }
-    }
-
     const generateLine = (
         z: number,
         func: (theta: number, r: number) => Point
@@ -36,11 +29,11 @@ const linesGen7: DrawableFunction = ({ unwrap, rgba }) => {
             })
         )
     }
-    let lines = new Map<number, AnimatedLine>()
+    const lines = new Map<number, AnimatedLine>()
     lines.set(0, generateLine(0, eq1))
     let count = lines.size
 
-    let ended: DecoratedLine[] = []
+    const ended: DecoratedLine[] = []
 
     const draw: Draw = x => {
         if (x < 300) {

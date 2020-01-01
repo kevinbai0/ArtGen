@@ -3,7 +3,7 @@ import { generate, updateShapes, GenPoint } from "../utils"
 
 const particlesGen7: DrawableFunction = ({ unwrap, rgba }) => {
     const baseParticles = generate(100, i => {
-        let th = (unwrap([0, 500]) / 500) * 2 * Math.PI
+        const th = (unwrap([0, 500]) / 500) * 2 * Math.PI
         return GenPoint(Math.cos(th), Math.sin(th), {
             fill: rgba([255, 200], 0, 0, 0),
             radius: 1,
@@ -14,7 +14,7 @@ const particlesGen7: DrawableFunction = ({ unwrap, rgba }) => {
     const draw: Draw = (x: number) => {
         const seed = unwrap([10, 50])
 
-        let residualParticles = baseParticles.reduce((accum, point) => {
+        const residualParticles = baseParticles.reduce((accum, point) => {
             if (unwrap([0, 50]) < seed) return accum
             accum.push({
                 ...point,
@@ -32,7 +32,7 @@ const particlesGen7: DrawableFunction = ({ unwrap, rgba }) => {
         const radial = unwrap([5, 20])
         updateShapes(baseParticles, (point, i) => {
             const baseAngle = (i / 500) * 2 * Math.PI
-            let theta = baseAngle + x * 2 + separation
+            const theta = baseAngle + x * 2 + separation
             return {
                 x: Math.sin(theta) * (x / 1.2 + radial),
                 y: Math.cos(theta) * (x / 1.2 + radial)

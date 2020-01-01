@@ -1,5 +1,8 @@
 const artgen = document.getElementById("artgen")
-const { DrawEngine, art } = ArtGen
+const { DrawEngine } = ArtGen
+
+console.log(ArtGen.main)
+console.log(window)
 
 let drawEngine = new DrawEngine(art.example, artgen)
 

@@ -2,7 +2,7 @@ import { Draw, DrawableFunction } from "../types"
 import { generate, updateShapes, GenPoint } from "../utils"
 
 const particlesGen2: DrawableFunction = ({ unwrap }) => {
-    let points = generate(1000, i =>
+    const points = generate(1000, i =>
         GenPoint([-512, 512], [-512, 512], {
             fill: `rgba(${(0 / 600) * 200},200,${200 * (1 - 0 / 600)},1)`,
             radius: 3,

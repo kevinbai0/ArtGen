@@ -5,7 +5,7 @@ class AnimatedCircle {
     private _y: Value
     private _r: Value
     private _percentage: number
-    private _ended: boolean = false
+    private _ended = false
     private _delay: number
 
     private _arc: DecoratedArc

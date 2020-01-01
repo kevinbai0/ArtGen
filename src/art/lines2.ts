@@ -3,7 +3,7 @@ import { GenLine } from "../utils"
 
 const linesGen2: DrawableFunction = ({ unwrap }) => {
     const piecewise = () => {
-        let arr: Point[] = []
+        const arr: Point[] = []
         const xShift = -100 + unwrap([0, 300]) - 80
         const xStretch = 200 + unwrap([0, 100]) - 50
         const yShift = 100 + unwrap([0, 150]) - 75
@@ -31,7 +31,7 @@ const linesGen2: DrawableFunction = ({ unwrap }) => {
         return arr
     }
 
-    let lineShapes: { points: Point[]; red: number; green: number }[] = []
+    const lineShapes: { points: Point[]; red: number; green: number }[] = []
     for (let i = 0; i < 200; i++) {
         lineShapes.push({
             points: piecewise(),

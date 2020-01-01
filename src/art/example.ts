@@ -19,11 +19,11 @@ const example: DrawableFunction = ({ unwrap, rgba }) => {
         c[3] * Math.sin((1 / Math.E) * c[1] * y)
 
     // our initial point
-    let points = generate(5, _ =>
+    const points = generate(5, () =>
         GenPoint([0, 0.1], [0, -0.1], { fill: rgba(0, 0, 0, 0.1), radius: 1 })
     )
 
-    const draw: Draw = _ =>
+    const draw: Draw = () =>
         [...Array(350)].reduce((accum, _, i) => {
             return accum.concat(
                 points.map((point, p) => {

@@ -14,13 +14,13 @@ const circlesGen4: DrawableFunction = ({ unwrap }) => {
     }
 
     let circlesCount = 1
-    let circles = new Map<number, AnimatedCircle>()
+    const circles = new Map<number, AnimatedCircle>()
     circles.set(
         0,
         new AnimatedCircle(randomArc(0, 0, 800), unwrap([0, 2 * Math.PI]))
     )
 
-    const draw: Draw = (x: number) => {
+    const draw: Draw = () => {
         circles.forEach((circle, key) => {
             if (!circle.ended) return
             circles.delete(key)
