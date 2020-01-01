@@ -4,22 +4,34 @@ ArtGen is a library that's meant to provide an easy way for both developers and 
 
 The goal of ArtGen is to provide a lightweight and fast library. No dependencies were used to keep the final build as small as possible.
 
+![Sample animation](https://media.giphy.com/media/hrvvcTTRcPOEM3QypY/giphy.gif)
+
+Note: this project is currently still in development so the current release may be broken.
+
 ## What it looks like (in code)
 
 ```javascript
-const drawFunction = () => {
+
+const example = ({unwrap, rgba}) => {
     // define constants
     const constants = [
-        2.689602099316258,
-        2.711045926632344,
-        2.0721756317448214,
-        1.1136017709074095
+        2.553308700841444,
+        1.3112688558630707,
+        1.781073930670376,
+        1.2974055728293994
     ]
+    /*const constants = [
+        unwrap([1,3]),
+        unwrap([1,3]),
+        unwrap([1,3]),
+        unwrap([1,3])
+    ]*/
+    console.log(constants)
 
     // define helper functions
     const calcX = (x, y, c) =>
-        Math.sin(3 * Math.sin(x) * Math.cos(c[0] * x - y * c[2])) +
-        c[2] * Math.sin(0.3 * Math.cos(c[0] * x * c[3]))
+        Math.sin(2 * Math.sin(x) * Math.cos(c[0] * x - y * c[2])) +
+        c[2] * Math.sin(1 * Math.cos(c[0] * x * c[3]))
     const calcY = (x, y, c) =>
         Math.sin(Math.PI * Math.cos(c[1] * x)) +
         c[3] * Math.sin((1 / Math.E) * c[1] * y)
@@ -39,9 +51,7 @@ const drawFunction = () => {
                 0.1 // alpha
             )
 
-            return Shape.point({
-                x: x * 150,
-                y: y * 150,
+            return ArtGen.utils.GenPoint(x * 150, y * 150, {
                 fill,
                 zIndex: i,
                 radius: 1
@@ -49,10 +59,8 @@ const drawFunction = () => {
         })
 
     return {
-        lambda: draw,
-        // iterate calculates the next value
+        draw,
         iterate: value => value + 1,
-        // end if will determine when animation ends
         endIf: duration => duration >= 10000
     }
 }
@@ -66,4 +74,8 @@ If you’re using npm:
 npm install artgenjs
 ```
 
-Note: this project is currently still in development so the current release may be broken
+or include it as a `script` in your HTML file:
+
+```javascript
+<script src="https://unpkg.com/artgenjs"></script>
+```
