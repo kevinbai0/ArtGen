@@ -2,18 +2,20 @@ import fs from "fs"
 import { DrawableFunction } from "../src/types"
 import TestingDrawingEngine from "./TestingDrawingEngine"
 
-import * as art from "../src/art"
+import { linesGen, particlesGen11, circlesGen5 } from "../src/art"
+
+const toTest = { linesGen, particlesGen11, circlesGen5 }
 
 const args = process.argv.slice(2)
 
-const dir = `./dist/${
-    args.length > 0 && args[0] === "--save" ? "test-" : ""
-}snapshots`
+const dir = `./snapshots/${
+    args.length > 0 && args[0] === "--save" ? "save/" : "/temp/"
+}`
 
 const SaveSnapShot = (fun: DrawableFunction, name: string) => {
     console.log("-------------------------------------")
     console.log(`Saving snapshot for ${name} to ${name}.txt`)
-    let json = JSON.stringify(TestingDrawingEngine(fun))
+    const json = JSON.stringify(TestingDrawingEngine(fun))
     return new Promise((resolve, reject) => {
         fs.writeFile(`${dir}/${name}.txt`, json, err => {
             if (err) {
@@ -28,8 +30,8 @@ const SaveSnapShot = (fun: DrawableFunction, name: string) => {
     })
 }
 
-const snapshots: [DrawableFunction, string][] = Object.keys(art).map(key => {
-    return [art[key], key]
+const snapshots: [DrawableFunction, string][] = Object.keys(toTest).map(key => {
+    return [toTest[key], key]
 })
 
 const saveSnapshots = (values: typeof snapshots) => {
@@ -37,7 +39,7 @@ const saveSnapshots = (values: typeof snapshots) => {
         console.log("---------------------------------------")
         return
     }
-    SaveSnapShot(values[0][0], values[0][1]).then(success => {
+    SaveSnapShot(values[0][0], values[0][1]).then(() => {
         saveSnapshots(values.slice(1))
     })
 }

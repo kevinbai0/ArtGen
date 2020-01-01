@@ -1,7 +1,10 @@
-import * as art from "../../src/art"
+/* eslint-disable @typescript-eslint/no-namespace */
+import { linesGen, particlesGen11, circlesGen5 } from "../../src/art"
 
 import fs from "fs"
 import { DrawableFunction } from "../../src/types"
+
+const toTest = { linesGen, particlesGen11, circlesGen5 }
 
 declare global {
     namespace jest {
@@ -28,21 +31,19 @@ expect.extend({
     }
 })
 
-const snapshots: [DrawableFunction, string][] = Object.keys(art).map(key => [
-    art[key],
+const snapshots: [DrawableFunction, string][] = Object.keys(toTest).map(key => [
+    toTest[key],
     key
 ])
 
 function runExpect(pair: typeof snapshots[0], done: jest.DoneCallback) {
     const promise1 = new Promise<string>((res, rej) =>
-        fs.readFile(
-            `./dist/test-snapshots/${pair[1]}.txt`,
-            "utf8",
-            (err, data) => (err ? rej(err) : res(data))
+        fs.readFile(`./snapshots/save/${pair[1]}.txt`, "utf8", (err, data) =>
+            err ? rej(err) : res(data)
         )
     )
     const promise2 = new Promise<string>((res, rej) =>
-        fs.readFile(`./dist/snapshots/${pair[1]}.txt`, "utf8", (err, data) =>
+        fs.readFile(`./snapshots/temp/${pair[1]}.txt`, "utf8", (err, data) =>
             err ? rej(err) : res(data)
         )
     )
@@ -50,7 +51,7 @@ function runExpect(pair: typeof snapshots[0], done: jest.DoneCallback) {
         .then(values => {
             expect(values[0]).toBeAbbr(values[1], pair[1])
         })
-        .then(_ => done())
+        .then(() => done())
 }
 
 snapshots.forEach(snapshot =>
