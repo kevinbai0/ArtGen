@@ -1,9 +1,3 @@
-const artgen = document.getElementById("artgen")
-
-console.log(window.ArtGen)
-
-
-
 const example = ({ unwrap, rgba }) => {
     /** define constants */
     const constants = [
@@ -57,9 +51,9 @@ const example = ({ unwrap, rgba }) => {
         iterate: x => x + 1,
         endIf: duration => duration >= 10000
     }
-  }
-  
+}
 
+const artgen = document.getElementById("artgen")
 const drawEngine = new window.ArtGen.DrawEngine(example, artgen)
 
 let lastN = []
