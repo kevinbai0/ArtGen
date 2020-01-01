@@ -1,4 +1,14 @@
-import { Range, RGBA, Value, Color } from "./types"
+import {
+    Range,
+    RGBA,
+    Value,
+    Color,
+    Point,
+    DecoratedLine,
+    DecoratedPoint,
+    DecoratedArc,
+    ShapeType
+} from "./types"
 
 export function updateShapes<T>(
     shapes: T[],
@@ -51,4 +61,87 @@ export const withOpacity = (opacity: Value, color?: Color): Color => {
     if (typeof color === "string") return color
     const rgb = color as RGBA
     return rgba(rgb.r, rgb.g, rgb.b, opacity)
+}
+
+const defaultPoint: DecoratedPoint = {
+    type: ShapeType.point,
+    x: 0,
+    y: 0,
+    zIndex: 0,
+    clone(keys) {
+        return clone(this, keys)
+    },
+    mutate(keys) {
+        return mutate(this, keys)
+    }
+}
+
+const defaultLine: DecoratedLine = {
+    type: ShapeType.line,
+    points: [],
+    zIndex: 0,
+    range: ["0%", "100%"],
+    clone(keys) {
+        return clone(this, keys)
+    },
+    mutate(keys) {
+        return clone(this, keys)
+    }
+}
+
+const defaultArc: DecoratedArc = {
+    type: ShapeType.arc,
+    x: 0,
+    y: 0,
+    radius: 1,
+    zIndex: 0,
+    start: 0,
+    end: 2 * Math.PI,
+    direction: "clockwise",
+    clone(keys) {
+        return clone(this, keys)
+    },
+    mutate(keys) {
+        return clone(this, keys)
+    }
+}
+
+function clone<T>(obj: T, keys?: Partial<T>) {
+    const copy = Object.assign({}, obj) as T
+    for (const key in keys) {
+        copy[key] = keys[key] as T[Extract<keyof T, string>]
+    }
+    return copy
+}
+
+function mutate<T>(obj: T, keys?: Partial<T>) {
+    if (!keys) return obj
+    for (const key in keys) {
+        obj[key] = keys[key] as T[Extract<keyof T, string>]
+    }
+    return obj
+}
+
+export function GenPoint(
+    x: Value,
+    y: Value,
+    values?: Partial<DecoratedPoint>
+): DecoratedPoint {
+    return defaultPoint.clone(Object.assign({ x, y }, values))
+}
+
+export function GenLine(
+    points: Point[],
+    values?: Partial<DecoratedLine>
+): DecoratedLine {
+    return defaultLine.clone(Object.assign({ points }, values))
+}
+
+export function GenArc(
+    x: Value,
+    y: Value,
+    radius: Value,
+    values?: Partial<DecoratedArc>
+): DecoratedArc {
+    return defaultArc.clone(Object.assign({ x, y, radius }, values))
 }

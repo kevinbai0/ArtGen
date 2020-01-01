@@ -40,7 +40,7 @@ const TestingDrawingEngine = (testingFunction: DrawableFunction) => {
     let shapes: DecoratedShape[][] = []
 
     while (!fun.endIf(duration, x)) {
-        let output = fun.lambda(x, count)
+        let output = fun.draw(x, count)
         shapes = shapes.concat(output)
         count += 1
         x = fun.iterate(x, duration)

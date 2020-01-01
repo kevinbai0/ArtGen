@@ -139,7 +139,7 @@ class DrawEngine {
         x: number
     ): void => {
         this._timeTracker.start()
-        const funResult = fun.lambda(x, this._iterationCount)
+        const funResult = fun.draw(x, this._iterationCount)
         this._timeTracker.addBreakpoint("calculate")
 
         const next = () =>
