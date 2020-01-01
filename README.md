@@ -1,4 +1,6 @@
-# artgen.js
+# ArtGen
+
+[![Build Status](https://travis-ci.com/kevinbai0/ArtGen.svg?branch=master)](https://travis-ci.com/kevinbai0/ArtGen) [![gzip size](https://img.badgesize.io/https://unpkg.com/artgenjs?compression=gzip)](http://img.badgesize.io/https://unpkg.com/artgenjs?compression=gzip) [![install size](https://packagephobia.now.sh/badge?p=artgenjs@1.0.9)](https://packagephobia.now.sh/result?p=artgenjs@1.0.9)
 
 ArtGen is a library that's meant to provide an easy way for both developers and artists create visual generative art on the web by taking a declarative and partly functional approach that abstracts away the messy of the code.
 
