@@ -1,4 +1,5 @@
 import { unwrap } from "../../src/utils"
+/* eslint-disable @typescript-eslint/no-namespace */
 
 declare global {
     namespace jest {

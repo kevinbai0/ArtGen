@@ -10,11 +10,11 @@ import {
  * instead of a random number between two values, it returns the midpoint of 2 numbers
  * @param value
  */
-let customUnwrap = (value: Value): number => {
+const customUnwrap = (value: Value): number => {
     if (typeof value === "number") return value
     if (typeof value[0] !== "number") {
         const newRange = value as Array<Range<number>>
-        let rI = Math.floor(0.5 * value.length)
+        const rI = Math.floor(0.5 * value.length)
         return 0.5 * (newRange[rI][1] - newRange[rI][0]) + newRange[rI][0]
     }
     const newRange = value as Range<number>
@@ -40,7 +40,7 @@ const TestingDrawingEngine = (testingFunction: DrawableFunction) => {
     let shapes: DecoratedShape[][] = []
 
     while (!fun.endIf(duration, x)) {
-        let output = fun.lambda(x, count)
+        const output = fun.draw(x, count)
         shapes = shapes.concat(output)
         count += 1
         x = fun.iterate(x, duration)
