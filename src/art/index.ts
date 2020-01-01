@@ -24,6 +24,7 @@ import linesGen8 from "./functions/lines8"
 import particlesGen9 from "./functions/particles9"
 import particlesGen10 from "./functions/particles10"
 import particlesGen11 from "./functions/particles11"
+import linesGen9 from "./functions/lines9"
 
 const circlesGen = circleArtGenerator({
     colorRange: {
@@ -60,6 +61,7 @@ export {
     linesGen6,
     linesGen7,
     linesGen8,
+    linesGen9,
     particlesGen,
     particlesGen2,
     particlesGen3,
