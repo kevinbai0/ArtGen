@@ -30,7 +30,7 @@
     "url": "https://github.com/kevinbai0/artgen/issues",
     "email": "kevin.c.bai0@gmail.com"
   },
-  "license": "ISC",
+  "license": "GNU",
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/plugin-proposal-class-properties": "^7.7.0",

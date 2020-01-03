@@ -21,11 +21,12 @@ import particlesGen8 from "./particles8"
 import christmasGen from "./christmas"
 import christmasGen2 from "./christmas2"
 import linesGen8 from "./lines8"
-import linesGen9 from "./lines9"
+import linesGen9 from "./particles13"
 import particlesGen9 from "./particles9"
 import particlesGen10 from "./particles10"
 import particlesGen11 from "./particles11"
-import example from "./example"
+import particlesGen12 from "./particles12"
+import particlesGen13 from "./particles13"
 
 const circlesGen = circleArtGenerator({
     colorRange: {
@@ -74,7 +75,8 @@ export {
     particlesGen9,
     particlesGen10,
     particlesGen11,
+    particlesGen12,
+    particlesGen13,
     christmasGen,
-    christmasGen2,
-    example
+    christmasGen2
 }

@@ -1,7 +1,6 @@
 const path = require("path")
 
 module.exports = {
-    entry: "./src/index",
     target: "web",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"]

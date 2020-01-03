@@ -1,7 +1,7 @@
 import { Draw, DrawableFunction, DecoratedPoint } from "../types"
 import { generate, GenPoint } from "../utils"
 
-const example: DrawableFunction = ({ unwrap, rgba }) => {
+const particlesGen12: DrawableFunction = ({ unwrap, rgba }) => {
     /** define constants */
     const constants: [number, number, number, number] = [
         2.689602099316258,
@@ -56,4 +56,4 @@ const example: DrawableFunction = ({ unwrap, rgba }) => {
     }
 }
 
-export default example
+export default particlesGen12

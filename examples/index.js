@@ -107,8 +107,56 @@ const test = ({unwrap, rgba}) => {
     }
 }
 
+const { GenPoint, GenLine, generate } = ArtGen.utils
+
+function newFunction({ unwrap, rgba }) {
+    const seed = 1.1718156807070783//unwrap([0,3])
+    console.log(seed)
+    const count = 50
+    let points = generate(count, i => {
+        return {
+            x: unwrap([-500,500]),
+            y: unwrap([-500,500])
+        }
+    })
+    let lines = generate(count, i => {
+        return GenLine([points[i]], {
+            stroke: rgba(128, i / count * 255,255,0.01),
+            lineWidth: 2,
+            zIndex: i
+        })
+    })
+
+    const draw = (value) => {
+        points = points.map((point, i) => {
+            const x = unwrap(point.x)
+            const y = unwrap(point.y)
+            const newX = Math.cos(x * x + y * Math.sqrt(2)) + Math.sin(seed * Math.pow(y, 2))
+            return {
+                x: newX,
+                y: (unwrap([0,1]) < 0.5 ? 1 : -1) * Math.sqrt(4 - newX * newX)// Math.sin(y + x * Math.PI) + Math.cos(2 * Math.cos(x * y) * Math.pow(seed, 2))
+            }
+        })
+        lines.forEach((line, i) => {
+            const x = unwrap(points[i].x), y = unwrap(points[i].y)
+            line.points.push({x: x * 250, y: y * 250})
+            line.range = [line.points.length - 3, line.points.length - 1]
+            line.stroke = rgba(line.stroke.r, line.stroke.g, value / 10, line.stroke.a)
+        })
+
+        
+        return lines
+    }
+
+    return {
+        draw,
+        iterate: x => x + 1,
+        endIf: duration => duration >= 10000
+    }
+}
+
 const artgen = document.getElementById("artgen")
-const drawEngine = new window.ArtGen.DrawEngine(test, artgen)
+const drawEngine = new window.ArtGen.DrawEngine(newFunction, artgen)
 
 let lastN = []
 

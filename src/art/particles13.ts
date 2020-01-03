@@ -1,7 +1,7 @@
 import { DrawableFunction, DecoratedPoint, Draw } from "../types"
 import { generate, rgba, unwrap, GenPoint } from "../utils"
 
-const linesGen9: DrawableFunction = () => {
+const particlesGen13: DrawableFunction = () => {
     /** define constants */
     const constants: [number, number, number, number] = [
         /*unwrap([1, 3]),
@@ -62,4 +62,4 @@ const linesGen9: DrawableFunction = () => {
     }
 }
 
-export default linesGen9
+export default particlesGen13
