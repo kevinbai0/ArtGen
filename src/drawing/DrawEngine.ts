@@ -97,7 +97,14 @@ class DrawEngine {
     private _state: Map<number, DecoratedShape>
     private _timeTracker: TimeTracker
 
-    constructor(fun: DrawableFunction, container: HTMLDivElement) {
+    constructor(
+        fun: DrawableFunction,
+        container: HTMLDivElement,
+        coordinateSystem?: {
+            width: number
+            height: number
+        }
+    ) {
         this._drawableFunctionConfig = fun({ unwrap, rgba })
         // normalizing to square canvas
         const artboard = document.createElement("canvas")
@@ -115,8 +122,16 @@ class DrawEngine {
 
         container.appendChild(backgroundArtboard)
         container.appendChild(artboard)
-
-        this._virtualCanvas = new VirtualCanvas(artboard.width, artboard.height)
+        if (coordinateSystem)
+            this._virtualCanvas = new VirtualCanvas(
+                coordinateSystem.width,
+                coordinateSystem.height
+            )
+        else
+            this._virtualCanvas = new VirtualCanvas(
+                artboard.width,
+                artboard.height
+            )
 
         this._ctx = artboard.getContext("2d")
         this._backgroundCtx = backgroundArtboard.getContext("2d")

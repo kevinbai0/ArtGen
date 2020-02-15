@@ -23,8 +23,12 @@ class VirtualCanvas {
         // raw: 0,0 is in the top left
         const maxScale = Math.max(this._scaleX, this._scaleY)
         return {
-            x: (unwrap(point.x) + this.width / 2) * maxScale,
-            y: (this.height / 2 - unwrap(point.y)) * maxScale
+            x:
+                (unwrap(point.x) + this.width / 2) * maxScale -
+                ((maxScale - this._scaleX) * this.width) / 2,
+            y:
+                (this.height / 2 - unwrap(point.y)) * maxScale -
+                ((maxScale - this._scaleY) * this.width) / 2
         }
     }
 
